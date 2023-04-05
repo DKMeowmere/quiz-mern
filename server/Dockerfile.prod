@@ -1,0 +1,9 @@
+FROM node:19-bullseye
+WORKDIR /app/client
+COPY package*.json .
+RUN npm i
+COPY . .
+EXPOSE 4000
+# RUN npm run test
+RUN npm run build
+CMD ["npm", "run", "start"]
