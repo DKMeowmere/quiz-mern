@@ -4,7 +4,11 @@ function createServer() {
 	const app = express()
 
 	app.use(express.json())
-  return app
+	app.use((req, res) => {
+		res.status(404).json({ error: "not found" })
+	})
+
+	return app
 }
 
 export default createServer
