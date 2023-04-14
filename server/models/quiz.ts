@@ -1,18 +1,23 @@
 import mongoose from "mongoose"
 import { Quiz as QuizType } from "../types/quiz"
-import { questionSchema } from "../types/question"
+import { questionSchema } from "./schemas/question"
 
-const quizSchema = new mongoose.Schema<QuizType>({
-	title: {
-		type: String,
-		required: true,
+const quizSchema = new mongoose.Schema<QuizType>(
+	{
+		title: {
+			type: String,
+			required: true,
+		},
+		fileLocation: {
+			type: String,
+		},
+		questions: {
+			type: [questionSchema],
+			required: true,
+		},
 	},
-	fileLocation: {
-		type: String,
-		required: true,
-	},
-	questions: [questionSchema],
-})
+	{ timestamps: true }
+)
 
 const Quiz = mongoose.model<QuizType>("quiz", quizSchema)
 export default Quiz

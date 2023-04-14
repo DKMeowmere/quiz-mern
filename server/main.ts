@@ -1,4 +1,3 @@
-import morgan from "morgan"
 import createServer from "./utils/createServer"
 import mongoose from "mongoose"
 import env from "./config/envVariables"
@@ -6,7 +5,6 @@ import env from "./config/envVariables"
 async function start() {
 	try {
 		const app = createServer()
-		app.use(morgan("dev"))
     mongoose.set("strictQuery", false)
 		await mongoose.connect(env.MONGO_URI)
 		console.log("Connected to db")
