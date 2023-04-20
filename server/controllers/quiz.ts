@@ -202,10 +202,8 @@ export async function deleteQuiz(req: CustomRequest, res: Response) {
 			})
 		}
 
-		res.json(quiz)
-
 		const mainFilePath = path.resolve(`.${quiz.fileLocation}`)
-		quiz.fileLocation && (await removeFile(mainFilePath))
+		await removeFile(mainFilePath)
 
 		for (let i = 0; i < quiz.questions.length; i++) {
 			const question = quiz.questions[i]
@@ -218,6 +216,8 @@ export async function deleteQuiz(req: CustomRequest, res: Response) {
 				answer.fileLocation && (await removeFile(answerFilePath))
 			}
 		}
+
+		res.json(quiz)
 	} catch (err) {
 		env.NODE_ENV === "development" && console.log(err)
 
@@ -326,14 +326,14 @@ async function handleQuizQuestionFiles(
 			`./static/uploads/quiz/${newFileName}`
 		)
 
+		if (question.fileLocation) {
+			await removeFile(path.resolve(`.${question.fileLocation}`))
+		}
+
 		await fs.rename(
 			req.pathToFilesProvidedOnLastReq[fileIndex],
 			absolutePathToFile
 		)
-
-		if (question.fileLocation) {
-			await removeFile(path.resolve(`.${question.fileLocation}`))
-		}
 
 		question.fileLocation = `/static/uploads/quiz/${newFileName}`
 		req.pathToFilesProvidedOnLastReq[fileIndex] = absolutePathToFile
@@ -402,14 +402,14 @@ async function handleQuizAnswerFiles(
 				`./static/uploads/quiz/${newFileName}`
 			)
 
+			if (answer.fileLocation) {
+				await removeFile(path.resolve(`.${answer.fileLocation}`))
+			}
+
 			await fs.rename(
 				req.pathToFilesProvidedOnLastReq[fileIndex],
 				absolutePathToFile
 			)
-
-			if (answer.fileLocation) {
-				await removeFile(path.resolve(`.${answer.fileLocation}`))
-			}
 
 			answer.fileLocation = `/static/uploads/quiz/${newFileName}`
 			req.pathToFilesProvidedOnLastReq[fileIndex] = absolutePathToFile

@@ -1,0 +1,8 @@
+FROM node:19-bullseye
+WORKDIR /app/server
+COPY package*.json .
+RUN npm i
+COPY . .
+EXPOSE 5000
+ENV CI=true
+CMD ["npm", "run", "test"]

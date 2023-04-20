@@ -1,0 +1,14 @@
+version: 1.0.0
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.test
+    restart: always
+    container_name: quiz-server-test
+    image: quiz-server-test
+    ports:
+      - 5000:5000
+    volumes:
+      - ./server:/app/server
+      - /app/server/node_modules

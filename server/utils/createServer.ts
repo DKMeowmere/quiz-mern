@@ -17,9 +17,10 @@ function createServer() {
 			origin: [env.CLIENT_APP_URL],
 		})
 	)
-	app.use(morgan("dev"))
+	env.NODE_ENV !== "test" && app.use(morgan("dev"))
 	app.use((req, res, next) => setupCustomRequest(req, res, next))
 
+	app.use("healthcheck", (req, res) => res.status(200))
 	app.use("/api/quiz", quizRouter)
 
 	app.use((req, res) => {

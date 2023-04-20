@@ -1,6 +1,6 @@
 import { Quiz as QuizType } from "../../types/quiz"
 
-export const quizText: QuizType = {
+export const quizPayload: QuizType = {
 	title: "quiz title",
 	questions: [
 		{
@@ -15,7 +15,7 @@ export const quizText: QuizType = {
 				{
 					title: "Quiz anwser 2",
 					isTrue: false,
-					type: "IMAGE",
+					type: "TEXT",
 				},
 				{
 					title: "Quiz anwser 3",
@@ -30,8 +30,8 @@ export const quizText: QuizType = {
 			],
 		},
 		{
-			title: "question title with file",
-			type: "IMAGE",
+			title: "question title",
+			type: "TEXT",
 			answers: [
 				{
 					title: "Quiz anwser 1",
@@ -41,7 +41,7 @@ export const quizText: QuizType = {
 				{
 					title: "Quiz anwser 2",
 					isTrue: false,
-					type: "IMAGE",
+					type: "TEXT",
 				},
 				{
 					title: "Quiz anwser 3",

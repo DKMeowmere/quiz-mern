@@ -7,8 +7,14 @@
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"skipLibCheck": true,
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"types": ["jest", "node"]
 	},
 	"include": ["*.ts", "/static/*"],
-	"exclude": ["dist", "node_modules", "jest.config.ts"]
+	"exclude": [
+		"dist",
+		"node_modules",
+		"jest.config.ts",
+		"/__tests__/**",
+	]
 }
