@@ -11,6 +11,12 @@ config({ path: path.join(__dirname, `./env/.env.${process.env.NODE_ENV}`) })
 //put your development.env, production.env, test.env in env dir
 // type in /types/env
 
+const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || "NaN")
+
+if (isNaN(SALT_ROUNDS)) {
+	throw new Error("SALT_ROUNDS must be a number")
+}
+
 const unvalidatedEnv = {
 	PORT: process.env.PORT,
 	MONGO_URI: process.env.MONGO_URI,
@@ -18,6 +24,7 @@ const unvalidatedEnv = {
 	CLIENT_APP_URL: process.env.CLIENT_APP_URL,
 	NODE_ENV: process.env.NODE_ENV,
 	UNIVERSAL_ERROR_MESSAGE: process.env.UNIVERSAL_ERROR_MESSAGE,
+	SALT_ROUNDS,
 }
 
 const env = envSchema.parse(unvalidatedEnv)

@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 import { Quiz as QuizType } from "../types/quiz"
 import { questionSchema } from "./schemas/question"
 
-const quizSchema = new mongoose.Schema<QuizType>(
+export const quizSchema = new mongoose.Schema<QuizType>(
 	{
 		title: {
 			type: String,
@@ -14,6 +14,10 @@ const quizSchema = new mongoose.Schema<QuizType>(
 		questions: {
 			type: [questionSchema],
 			required: true,
+		},
+		creatorId: {
+			type: String,
+			ref: "User",
 		},
 	},
 	{ timestamps: true }

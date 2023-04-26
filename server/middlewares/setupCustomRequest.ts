@@ -9,5 +9,6 @@ export function setupCustomRequest(
 	req.isFilesValidationPassed = true
 	req.pathToFilesProvidedOnLastReq = []
 	req.pathToFilesAddedOnLastReq = []
+	req.user = null
 	next()
 }

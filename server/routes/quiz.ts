@@ -27,7 +27,7 @@ const upload = multer({
 		fileSize: 1024 * 1024 * 5,
 	},
 	fileFilter(req: CustomRequest, file, callback) {
-		const allowedFilesExtensions = [".jpg", ".jpeg", ".png", ".mp3"]
+		const allowedFileExtensions = [".jpg", ".jpeg", ".png", ".mp3"]
 		const fileExtension = path.extname(file.originalname)
 
 		if (file.originalname.includes("/")) {
@@ -36,7 +36,7 @@ const upload = multer({
 			return
 		}
 
-		if (allowedFilesExtensions.includes(fileExtension)) {
+		if (allowedFileExtensions.includes(fileExtension)) {
 			req.pathToFilesProvidedOnLastReq?.push(
 				path.resolve(`./static/uploads/quiz/${file.originalname}`)
 			)

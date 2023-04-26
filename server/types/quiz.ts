@@ -8,6 +8,7 @@ export const quizSchema = z.object({
 	questions: z
 		.array(questionSchema)
 		.nonempty({ message: "Musisz podać przynajmniej jedno pytanie" }),
+	creatorId: z.string(),
 })
 
 export type Quiz = z.infer<typeof quizSchema>

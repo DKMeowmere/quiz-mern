@@ -9,6 +9,7 @@ export const envSchema = z.object({
 	CLIENT_APP_URL: z.string(),
 	NODE_ENV: z.enum(nodeEnvEnum),
 	UNIVERSAL_ERROR_MESSAGE: z.string(),
+	SALT_ROUNDS: z.number().positive(),
 })
 
 export type Env = z.infer<typeof envSchema>
