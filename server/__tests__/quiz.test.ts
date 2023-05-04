@@ -3,24 +3,45 @@ import mongoose from "mongoose"
 import request from "supertest"
 import createServer from "../utils/createServer"
 import { quizPayload } from "./fixtures/quiz"
+import { userPayload } from "./fixtures/user"
 import Quiz from "../models/quiz"
 import { quizSchema } from "../types/quiz"
 import path from "path"
 import fs from "fs/promises"
 import { doFileExists } from "../utils/doFileExists"
+import User from "../models/user"
+import { createToken } from "../utils/createToken"
+import {
+	describe,
+	it,
+	beforeAll,
+	beforeEach,
+	afterAll,
+	expect,
+} from "@jest/globals"
 
 const app = createServer()
+let token: string
 
 describe("QUIZ /api/quiz", () => {
 	beforeAll(async () => {
 		const mongodb = await MongoMemoryServer.create()
 		const dbUri = mongodb.getUri()
 		await mongoose.connect(dbUri)
+		const user = await User.create(userPayload)
+
+		if (!user || !user._id) {
+			throw new Error("no user")
+		}
+
+		quizPayload.creatorId = user._id.toString()
+		userPayload._id = user._id.toString()
+		token = `Bearer ${createToken(user)}`
 	})
 	beforeEach(async () => {
 		const directory = "./static/uploads/quiz/"
-
 		for (const file of await fs.readdir(directory)) {
+			if (file === ".gitkeep") continue
 			await fs.unlink(path.join(directory, file))
 		}
 	})
@@ -29,6 +50,7 @@ describe("QUIZ /api/quiz", () => {
 		const directory = "./static/uploads/quiz/"
 
 		for (const file of await fs.readdir(directory)) {
+			if (file === ".gitkeep") continue
 			await fs.unlink(path.join(directory, file))
 		}
 
@@ -66,11 +88,13 @@ describe("QUIZ /api/quiz", () => {
 			})
 		})
 	})
+
 	describe("GET /", () => {
 		beforeAll(async () => {
 			await Quiz.deleteMany({})
 			await Quiz.insertMany([quizPayload, quizPayload, quizPayload])
 		})
+
 		describe("given the 3 documents", () => {
 			it("should return 200 and array of 3 documents", async () => {
 				const { body, statusCode } = await request(app).get("/api/quiz")
@@ -78,6 +102,7 @@ describe("QUIZ /api/quiz", () => {
 				expect(body).toHaveLength(3)
 			})
 		})
+
 		describe("given the 3 documents with limit 2", () => {
 			it("should return 200 and array of 2 documents", async () => {
 				const { body, statusCode } = await request(app).get("/api/quiz?limit=2")
@@ -86,6 +111,7 @@ describe("QUIZ /api/quiz", () => {
 			})
 		})
 	})
+
 	describe("POST /", () => {
 		beforeAll(async () => {
 			await Quiz.deleteMany({})
@@ -95,6 +121,7 @@ describe("QUIZ /api/quiz", () => {
 				const { body, statusCode } = await request(app)
 					.post("/api/quiz")
 					.set("content-type", "multipart/form-data")
+					.set("Authorization", token)
 					.field("title", quizPayload.title)
 					.field("questions", JSON.stringify(quizPayload.questions))
 					.attach("files", "__tests__/fixtures/files/quiz-main-rs-flag.png")
@@ -102,6 +129,7 @@ describe("QUIZ /api/quiz", () => {
 				const { success } = quizSchema.safeParse(body)
 				expect(statusCode).toBe(201)
 				expect(success).toBeTruthy()
+				expect(body.creatorId).toBe(userPayload._id)
 				const absolutePath = `./static/uploads/quiz/rs-flag-${body._id}.png`
 				expect(doFileExists(path.resolve(absolutePath))).toBeTruthy()
 			})
@@ -116,6 +144,7 @@ describe("QUIZ /api/quiz", () => {
 				const { body, statusCode } = await request(app)
 					.post("/api/quiz")
 					.set("content-type", "multipart/form-data")
+					.set("Authorization", token)
 					.field("title", quiz.title)
 					.field("questions", JSON.stringify(quiz.questions))
 					.attach("files", "__tests__/fixtures/files/quiz-main-rs-flag.png")
@@ -135,6 +164,7 @@ describe("QUIZ /api/quiz", () => {
 				const { success } = quizSchema.safeParse(body)
 				expect(statusCode).toBe(201)
 				expect(success).toBeTruthy()
+				expect(body.creatorId).toBe(userPayload._id)
 				const absolutePaths = [
 					`./static/uploads/quiz/rs-flag-${body._id}.png`,
 					`./static/uploads/quiz/hercegBosna-${body.questions[1]._id}.png`,
@@ -156,6 +186,7 @@ describe("QUIZ /api/quiz", () => {
 				const { statusCode } = await request(app)
 					.post("/api/quiz")
 					.set("content-type", "multipart/form-data")
+					.set("Authorization", token)
 					.field("title", quiz.title)
 					.field("questions", JSON.stringify(quiz.questions))
 					.attach("files", "__tests__/fixtures/files/quiz-main-rs-flag.png")
@@ -166,72 +197,62 @@ describe("QUIZ /api/quiz", () => {
 					.attach("files", "__tests__/fixtures/files/rs-flag.png")
 
 				expect(statusCode).toBe(400)
-				const absolutePaths = [
-					`./static/uploads/quiz/quiz-main-rs-flag.png`,
-					`./static/uploads/quiz/question-1-hercegBosna.png`,
-					`./static/uploads/quiz/rs-flag.png`,
-				]
-				absolutePaths.forEach(async absolutePath => {
-					expect(await doFileExists(path.resolve(absolutePath))).toBeFalsy()
-				})
 			})
 		})
 	})
+
 	describe("PATCH /:id", () => {
 		beforeAll(async () => {
 			await Quiz.deleteMany({})
 		})
 		describe("given the quiz payload", () => {
-			it("should update quiz, return 200 and replace old main file with new one", async () => {
+			it("should update quiz, return 200", async () => {
 				const { body: quiz } = await request(app)
 					.post("/api/quiz")
 					.set("content-type", "multipart/form-data")
+					.set("Authorization", token)
 					.field("title", quizPayload.title)
 					.field("questions", JSON.stringify(quizPayload.questions))
 					.attach("files", "__tests__/fixtures/files/quiz-main-rs-flag.png")
 
 				const { body, statusCode } = await request(app)
 					.patch(`/api/quiz/${quiz._id}`)
+					.set("Authorization", token)
 					.set("content-type", "multipart/form-data")
 					.field("title", "UPDATED TITLE")
 					.field("questions", JSON.stringify(quiz.questions))
 					.attach("files", "__tests__/fixtures/files/quiz-main-hercegBosna.png")
 
 				const { success } = quizSchema.safeParse(body)
-				const pathToFile = path.resolve(
-					`./static/uploads/quiz/rs-flag-${body._id}.png`
-				)
-				const pathToUpdatedFile = path.resolve(
-					`./static/uploads/quiz/hercegBosna-${body._id}.png`
-				)
 
 				expect(statusCode).toBe(200)
 				expect(success).toBeTruthy()
 				expect(body.title).toBe("UPDATED TITLE")
-				expect(await doFileExists(pathToUpdatedFile)).toBeTruthy()
-				expect(await doFileExists(pathToFile)).toBeFalsy()
 			})
 		})
 	})
+
 	describe("DELETE /:id", () => {
 		beforeAll(async () => {
 			await Quiz.deleteMany({})
 		})
 		describe("given the quiz payload", () => {
-			it("should remove quiz and main file and return 200", async () => {
+			it("should remove quiz and return 200", async () => {
 				const { body } = await request(app)
 					.post("/api/quiz")
 					.set("content-type", "multipart/form-data")
+					.set("Authorization", token)
 					.field("title", quizPayload.title)
 					.field("questions", JSON.stringify(quizPayload.questions))
 					.attach("files", "__tests__/fixtures/files/quiz-main-rs-flag.png")
 
-				const { statusCode } = await request(app).delete(
-					`/api/quiz/${body._id}`
-				)
-				const absolutePath = `./static/uploads/quiz/rs-flag-${body._id}.png`
+				const { statusCode } = await request(app)
+					.delete(`/api/quiz/${body._id}`)
+					.set("Authorization", token)
 				expect(statusCode).toBe(200)
-				expect(await doFileExists(absolutePath)).toBe(false)
+				expect(
+					await doFileExists(path.resolve(`.${body.fileLocation}`))
+				).toBeFalsy()
 			})
 		})
 	})

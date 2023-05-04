@@ -9,6 +9,7 @@ import {
 	getQuizes,
 	updateQuiz,
 } from "../controllers/quiz"
+import { requireAuth } from "../middlewares/auth"
 
 const router = express.Router()
 const storage = multer.diskStorage({
@@ -49,10 +50,13 @@ const upload = multer({
 	},
 })
 
-router.route("/").get(getQuizes).post(upload.array("files"), createQuiz)
+router
+	.route("/")
+	.get(getQuizes)
+	.post(requireAuth, upload.array("files"), createQuiz)
 router
 	.route("/:id")
 	.get(getQuiz)
-	.patch(upload.array("files"), updateQuiz)
-	.delete(deleteQuiz)
+	.patch(requireAuth, upload.array("files"), updateQuiz)
+	.delete(requireAuth, deleteQuiz)
 export default router

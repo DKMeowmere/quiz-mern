@@ -2,6 +2,7 @@ import { Quiz as QuizType } from "../../types/quiz"
 
 export const quizPayload: QuizType = {
 	title: "quiz title",
+	creatorId: "no id",
 	questions: [
 		{
 			title: "question title",

@@ -4,7 +4,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile.test
-    restart: always
     container_name: quiz-server-test
     image: quiz-server-test
     ports:

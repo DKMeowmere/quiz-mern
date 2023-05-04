@@ -2,7 +2,15 @@ import express from "express"
 import multer from "multer"
 import path from "path"
 import { CustomRequest } from "../types/customRequest"
-import { deleteUser, getUser, getUsers, login, signUp, updateUser } from "../controllers/user"
+import {
+	deleteUser,
+	getUser,
+	getUsers,
+	login,
+	signUp,
+	updateUser,
+} from "../controllers/user"
+import { requireAuth } from "../middlewares/auth"
 
 const router = express.Router()
 
@@ -37,6 +45,9 @@ const upload = multer({
 
 router.route("/").get(getUsers).post(upload.single("avatar"), signUp)
 router.route("/login").post(login)
-router.route("/:id").get(getUser).patch(upload.single("avatar"), updateUser).delete(deleteUser)
+router
+	.route("/:id")
+	.get(getUser)
+	.patch(requireAuth, upload.single("avatar"), updateUser)
+	.delete(requireAuth, deleteUser)
 export default router
- 

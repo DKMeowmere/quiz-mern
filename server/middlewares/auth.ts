@@ -21,9 +21,8 @@ export async function requireAuth(
 		}
 
 		const token = authorization?.split(" ")[1]
-		const { id } = jwt.verify(token, env.TOKEN_SECRET) as JwtPayload
-
-		const user = User.findById(id)
+		const { payload } = jwt.verify(token, env.TOKEN_SECRET) as JwtPayload
+		const user = await User.findById(payload._id)
 
 		if (!user) {
 			throw new CustomError({
@@ -32,6 +31,7 @@ export async function requireAuth(
 			})
 		}
 
+		req.user = user
 		next()
 	} catch (err) {
 		env.NODE_ENV === "development" && console.log(err)

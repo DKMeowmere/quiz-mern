@@ -2,18 +2,19 @@ import { CustomRequest } from "../types/customRequest"
 import { Response } from "express"
 import { Quiz as QuizType, quizSchema } from "../types/quiz"
 import CustomError from "../types/customError"
-import env from "../config/envVariables"
 import Quiz from "../models/quiz"
-import { removeFile, removeFiles } from "../utils/removeFile"
+import { removeFile } from "../utils/removeFile"
 import fs from "fs/promises"
 import path from "path"
 import { HydratedDocument } from "mongoose"
 import mongoose from "mongoose"
+import { handleControllerError } from "../utils/handleControllerError"
 
 export async function getQuizes(req: CustomRequest, res: Response) {
 	try {
-		const { limit } = req.query
-		const quizes = await Quiz.find()
+		const { limit, creatorId } = req.query
+		const queryFilter = creatorId ? { creatorId } : {}
+		const quizes = await Quiz.find(queryFilter)
 			.sort({ createdAt: -1 })
 			.limit(parseInt(limit?.toString() || "0"))
 
@@ -26,13 +27,7 @@ export async function getQuizes(req: CustomRequest, res: Response) {
 
 		res.json(quizes)
 	} catch (err) {
-		env.NODE_ENV === "development" && console.log(err)
-
-		if (err instanceof CustomError) {
-			res.status(err.statusCode).json({ error: err.message })
-		} else {
-			res.status(400).json({ error: env.UNIVERSAL_ERROR_MESSAGE })
-		}
+		await handleControllerError(req, res, err)
 	}
 }
 
@@ -46,7 +41,15 @@ export async function createQuiz(req: CustomRequest, res: Response) {
 			})
 		}
 
+		if (!req.user) {
+			throw new CustomError({
+				message: "nie znaleziono użytkownika",
+				statusCode: 401,
+			})
+		}
+
 		const { title, questions } = req.body
+
 		const result = quizSchema.safeParse({
 			title,
 			questions: JSON.parse(questions),
@@ -57,7 +60,7 @@ export async function createQuiz(req: CustomRequest, res: Response) {
 		}
 		const body = result.data
 
-		const quiz = await Quiz.create(body)
+		const quiz = await Quiz.create({ ...body, creatorId: req.user._id })
 
 		await handleMainQuizFile(req, quiz)
 		await handleQuizQuestionFiles(req, quiz)
@@ -71,14 +74,7 @@ export async function createQuiz(req: CustomRequest, res: Response) {
 			}
 		})
 	} catch (err) {
-		env.NODE_ENV === "development" && console.log(err)
-
-		if (err instanceof CustomError) {
-			res.status(err.statusCode).json({ error: err.message })
-		} else {
-			res.status(400).json({ error: env.UNIVERSAL_ERROR_MESSAGE })
-		}
-		await removeFiles(req.pathToFilesProvidedOnLastReq || [])
+		await handleControllerError(req, res, err)
 	}
 }
 
@@ -105,14 +101,7 @@ export async function getQuiz(req: CustomRequest, res: Response) {
 
 		res.json(quiz)
 	} catch (err) {
-		env.NODE_ENV === "development" && console.log(err)
-
-		if (err instanceof CustomError) {
-			res.status(err.statusCode).json({ error: err.message })
-		} else {
-			res.status(400).json({ error: env.UNIVERSAL_ERROR_MESSAGE })
-		}
-		await removeFiles(req.pathToFilesProvidedOnLastReq || [])
+		await handleControllerError(req, res, err)
 	}
 }
 
@@ -123,6 +112,13 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 				message:
 					"Plik nie może zawierać '/' oraz musi posiadać rozszerzenie .jpg  .jpeg, .png lub .mp3",
 				statusCode: 400,
+			})
+		}
+
+		if (!req.user) {
+			throw new CustomError({
+				message: "nie znaleziono użytkownika",
+				statusCode: 401,
 			})
 		}
 
@@ -147,7 +143,7 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 			throw new CustomError({ message: "nie poprawne id", statusCode: 400 })
 		}
 
-		const quiz = await Quiz.findByIdAndUpdate(id, body)
+		const quiz = await Quiz.findById(id)
 
 		if (!quiz) {
 			throw new CustomError({
@@ -156,6 +152,16 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 			})
 		}
 
+		if (quiz.creatorId !== req.user._id?.toString()) {
+			throw new CustomError({
+				message:
+					"Nie możesz zaaktualizować quizu, który nie jest przypisany do twojego konta",
+				statusCode: 403,
+			})
+		}
+
+		quiz.title = body.title
+		quiz.questions = body.questions
 		await handleMainQuizFile(req, quiz)
 		await handleQuizQuestionFiles(req, quiz)
 		await handleQuizAnswerFiles(req, quiz)
@@ -170,19 +176,19 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 			}
 		})
 	} catch (err) {
-		env.NODE_ENV === "development" && console.log(err)
-
-		if (err instanceof CustomError) {
-			res.status(err.statusCode).json({ error: err.message })
-		} else {
-			res.status(400).json({ error: env.UNIVERSAL_ERROR_MESSAGE })
-		}
-		await removeFiles(req.pathToFilesProvidedOnLastReq || [])
+		await handleControllerError(req, res, err)
 	}
 }
 
 export async function deleteQuiz(req: CustomRequest, res: Response) {
 	try {
+		if (!req.user) {
+			throw new CustomError({
+				message: "nie znaleziono użytkownika",
+				statusCode: 401,
+			})
+		}
+
 		const { id } = req.params
 
 		if (!id) {
@@ -193,7 +199,7 @@ export async function deleteQuiz(req: CustomRequest, res: Response) {
 			throw new CustomError({ message: "nie poprawne id", statusCode: 400 })
 		}
 
-		const quiz = await Quiz.findByIdAndDelete(id)
+		const quiz = await Quiz.findById(id)
 
 		if (!quiz) {
 			throw new CustomError({
@@ -202,6 +208,15 @@ export async function deleteQuiz(req: CustomRequest, res: Response) {
 			})
 		}
 
+		if (quiz.creatorId !== req.user._id?.toString()) {
+			throw new CustomError({
+				message:
+					"Nie możesz usunąć quizu, który nie jest przypisany do twojego konta",
+				statusCode: 403,
+			})
+		}
+
+		await Quiz.findByIdAndDelete(id)
 		const mainFilePath = path.resolve(`.${quiz.fileLocation}`)
 		await removeFile(mainFilePath)
 
@@ -219,13 +234,7 @@ export async function deleteQuiz(req: CustomRequest, res: Response) {
 
 		res.json(quiz)
 	} catch (err) {
-		env.NODE_ENV === "development" && console.log(err)
-
-		if (err instanceof CustomError) {
-			res.status(err.statusCode).json({ error: err.message })
-		} else {
-			res.status(400).json({ error: env.UNIVERSAL_ERROR_MESSAGE })
-		}
+		await handleControllerError(req, res, err)
 	}
 }
 

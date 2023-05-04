@@ -9,13 +9,12 @@ export const userSchema = z.object({
 	email: z.string().email({ message: "Nie prawidłowy email" }),
 	password: z
 		.string()
-		.min(8, { message: "Minimalna długość hasła to 8 znaków" })
-		.max(20, { message: "Maksymalna długość hasła to 20 znaków" }),
+		.min(8, { message: "Minimalna długość hasła to 8 znaków" }),
 	biography: z.string().catch(""),
 	userQuizes: z.array(quizSchema).catch([]),
 	avatarLocation: z.string().optional(),
-	createdAt: z.number().optional(),
-	updatedAt: z.number().optional(),
+	createdAt: z.string().optional(),
+	updatedAt: z.string().optional(),
 })
 
 export type User = z.infer<typeof userSchema>

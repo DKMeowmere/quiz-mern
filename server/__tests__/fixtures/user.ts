@@ -1,8 +1,8 @@
 import { User } from "../../types/user"
 
-export const user: Omit<User, "createdAt" | "updatedAt"> = {
+export const userPayload: Omit<User, "createdAt" | "updatedAt"> = {
 	name: "user name",
-	email: "email",
+	email: "email@user.com",
 	password: "password",
 	biography: "biography",
 	userQuizes: [],
