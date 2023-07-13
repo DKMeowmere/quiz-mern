@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import { Quiz as QuizType } from "../types/quiz"
-import { questionSchema } from "./schemas/question"
+import { Quiz as QuizType } from "../types/quiz.js"
+import { questionSchema } from "./schemas/question.js"
 
 export const quizSchema = new mongoose.Schema<QuizType>(
 	{

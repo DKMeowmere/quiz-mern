@@ -1,16 +1,21 @@
 import express from "express"
 import cors from "cors"
-import env from "../config/envVariables"
-import quizRouter from "../routes/quiz"
-import userRouter from "../routes/user"
+import env from "../config/envVariables.js"
+import quizRouter from "../routes/quiz.js"
+import userRouter from "../routes/user.js"
 import morgan from "morgan"
-import { setupCustomRequest } from "../middlewares/setupCustomRequest"
+import { setupCustomRequest } from "../middlewares/setupCustomRequest.js"
+import path from "path"
+import { fileURLToPath } from "url"
+import { dirname } from "path"
 
 function createServer() {
 	const app = express()
 
+	const __filename = fileURLToPath(import.meta.url)
+	const __dirname = dirname(__filename)
+
 	app.use(express.json())
-	app.use("/static", express.static("static"))
 	app.use(
 		cors({
 			methods: ["GET", "POST", "PATCH", "DELETE", "PUT", "HEAD"],
@@ -24,9 +29,11 @@ function createServer() {
 	app.use("/healthcheck", (req, res) => res.status(200))
 	app.use("/api/quiz", quizRouter)
 	app.use("/api/user", userRouter)
+	app.use("/static", express.static(path.join(__dirname, "../static")))
+	app.use(express.static(path.join(__dirname, "../client")))
 
 	app.use((req, res) => {
-		res.status(404).json({ error: "nie znaleziono" })
+		res.status(200).sendFile(path.join(__dirname, "../client/index.html"))
 	})
 
 	return app

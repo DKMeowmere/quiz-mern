@@ -1,9 +1,9 @@
 import { NextFunction, Response } from "express"
-import { CustomRequest } from "../types/customRequest"
-import CustomError from "../types/customError"
-import env from "../config/envVariables"
+import { CustomRequest } from "../types/customRequest.js"
+import CustomError from "../types/customError.js"
+import env from "../config/envVariables.js"
 import jwt, { JwtPayload } from "jsonwebtoken"
-import User from "../models/user"
+import User from "../models/user.js"
 
 export async function requireAuth(
 	req: CustomRequest,

@@ -1,6 +1,6 @@
-import createServer from "./utils/createServer"
+import createServer from "./utils/createServer.js"
 import mongoose from "mongoose"
-import env from "./config/envVariables"
+import env from "./config/envVariables.js"
 
 async function start() {
 	try {

@@ -1,4 +1,4 @@
-import { CustomRequest } from "../types/customRequest"
+import { CustomRequest } from "../types/customRequest.js"
 import { NextFunction, Response } from "express"
 
 export function setupCustomRequest(

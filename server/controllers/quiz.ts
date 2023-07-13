@@ -1,14 +1,14 @@
-import { CustomRequest } from "../types/customRequest"
+import { CustomRequest } from "../types/customRequest.js"
 import { Response } from "express"
-import { Quiz as QuizType, quizSchema } from "../types/quiz"
-import CustomError from "../types/customError"
-import Quiz from "../models/quiz"
-import { removeFile } from "../utils/removeFile"
+import { Quiz as QuizType, quizSchema } from "../types/quiz.js"
+import CustomError from "../types/customError.js"
+import Quiz from "../models/quiz.js"
+import { removeFile } from "../utils/removeFile.js"
 import fs from "fs/promises"
 import path from "path"
 import { HydratedDocument } from "mongoose"
 import mongoose from "mongoose"
-import { handleControllerError } from "../utils/handleControllerError"
+import { handleControllerError } from "../utils/handleControllerError.js"
 
 export async function getQuizes(req: CustomRequest, res: Response) {
 	try {

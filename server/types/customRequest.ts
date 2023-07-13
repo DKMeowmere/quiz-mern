@@ -1,5 +1,5 @@
 import { Request as RequestType } from "express"
-import { User as UserType } from "./user"
+import { User as UserType } from "./user.js"
 
 //zod does not support type extension
 export interface CustomRequest extends RequestType {

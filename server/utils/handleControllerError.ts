@@ -1,8 +1,8 @@
 import { Response } from "express"
-import env from "../config/envVariables"
-import CustomError from "../types/customError"
-import { CustomRequest } from "../types/customRequest"
-import { removeFiles } from "./removeFile"
+import env from "../config/envVariables.js"
+import CustomError from "../types/customError.js"
+import { CustomRequest } from "../types/customRequest.js"
+import { removeFiles } from "./removeFile.js"
 
 export async function handleControllerError(
 	req: CustomRequest,

@@ -1,15 +1,15 @@
 import express from "express"
 import multer from "multer"
 import path from "path"
-import { CustomRequest } from "../types/customRequest"
+import { CustomRequest } from "../types/customRequest.js"
 import {
 	createQuiz,
 	deleteQuiz,
 	getQuiz,
 	getQuizes,
 	updateQuiz,
-} from "../controllers/quiz"
-import { requireAuth } from "../middlewares/auth"
+} from "../controllers/quiz.js"
+import { requireAuth } from "../middlewares/auth.js"
 
 const router = express.Router()
 const storage = multer.diskStorage({

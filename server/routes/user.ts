@@ -1,7 +1,7 @@
 import express from "express"
 import multer from "multer"
 import path from "path"
-import { CustomRequest } from "../types/customRequest"
+import { CustomRequest } from "../types/customRequest.js"
 import {
 	deleteUser,
 	getUser,
@@ -9,8 +9,8 @@ import {
 	login,
 	signUp,
 	updateUser,
-} from "../controllers/user"
-import { requireAuth } from "../middlewares/auth"
+} from "../controllers/user.js"
+import { requireAuth } from "../middlewares/auth.js"
 
 const router = express.Router()
 

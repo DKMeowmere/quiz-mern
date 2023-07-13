@@ -11,5 +11,8 @@ export default defineConfig({
 			usePolling: true,
 		},
 	},
+  build:{
+    outDir:"../server/dist/client"
+  },
 	plugins: [react()],
 })

@@ -1,5 +1,5 @@
 import fs from "fs/promises"
-import { doFileExists } from "../utils/doFileExists"
+import { doFileExists } from "../utils/doFileExists.js"
 
 export async function removeFile(path: string) {
 	if (await doFileExists(path)) {

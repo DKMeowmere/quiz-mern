@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { questionSchema } from "./question"
+import { questionSchema } from "./question.js"
 
 export const quizSchema = z.object({
 	_id: z.string().nullish(),

@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import { User as UserType } from "../types/user"
-import { quizSchema } from "./quiz"
+import { User as UserType } from "../types/user.js"
+import { quizSchema } from "./quiz.js"
 
 const userSchema = new mongoose.Schema<UserType>(
 	{

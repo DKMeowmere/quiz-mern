@@ -5,8 +5,8 @@
 	"type": "module",
 	"main": "main.js",
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development nodemon --legacy-watch --exec node --experimental-specifier-resolution=node --loader ts-node/esm main.ts",
-		"build": "tsc",
+		"dev": "cross-env NODE_ENV=development nodemon --legacy-watch --exec node --loader ts-node/esm main.ts",
+		"build": "tsc && npx copyfiles config/env/* dist -a && npx copyfiles static/** dist -a",
 		"start": "cross-env NODE_ENV=production node dist/main.js",
 		"test": "cross-env NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' npx jest --detectOpenHandles",
 		"test-watch": "cross-env NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules' npx jest --detectOpenHandles --watchAll"
@@ -15,6 +15,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"bcrypt": "^5.1.0",
+		"copyfiles": "^2.4.1",
 		"cors": "^2.8.5",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",

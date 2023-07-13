@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es2016",
+		"target": "ESNext",
 		"module": "ESNext",
 		"esModuleInterop": true,
 		"outDir": "./dist",
@@ -10,6 +10,6 @@
 		"moduleResolution": "node",
 		"types": ["jest", "node", "@types/jest"]
 	},
-	"include": ["*.ts", "/static/*"],
+	"include": ["*.ts", "/static/*", "env.prod"],
 	"exclude": ["dist", "node_modules", "__tests__/**", "jest.config.ts"]
 }

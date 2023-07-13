@@ -1,4 +1,4 @@
-import { answerSchema } from "./answer"
+import { answerSchema } from "./answer.js"
 import { z } from "zod"
 
 export const questionTypeEnum = ["TEXT", "IMAGE", "AUDIO"] as const

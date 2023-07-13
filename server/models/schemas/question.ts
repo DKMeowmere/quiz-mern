@@ -2,8 +2,8 @@ import mongoose from "mongoose"
 import {
 	Question as QuestionType,
 	questionTypeEnum,
-} from "../../types/question"
-import { answerSchema } from "./answer"
+} from "../../types/question.js"
+import { answerSchema } from "./answer.js"
 
 export const questionSchema = new mongoose.Schema<QuestionType>(
 	{

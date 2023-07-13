@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { Answer as AnswerType, answerTypeEnum } from "../../types/answer"
+import { Answer as AnswerType, answerTypeEnum } from "../../types/answer.js"
 
 export const answerSchema = new mongoose.Schema<AnswerType>(
 	{
