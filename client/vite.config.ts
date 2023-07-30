@@ -10,9 +10,17 @@ export default defineConfig({
 		watch: {
 			usePolling: true,
 		},
+		proxy: {
+			"/api": {
+				target: "https:/127.0.0.1:4000",
+				changeOrigin: true,
+				secure: false,
+				ws: true,
+			},
+		},
 	},
-  build:{
-    outDir:"../server/dist/client"
-  },
+	build: {
+		outDir: "../server/dist/client",
+	},
 	plugins: [react()],
 })

@@ -15,6 +15,7 @@ function createServer() {
 	const __filename = fileURLToPath(import.meta.url)
 	const __dirname = dirname(__filename)
 
+	app.use(express.urlencoded({ extended: true }))
 	app.use(express.json())
 	app.use(
 		cors({
@@ -30,11 +31,13 @@ function createServer() {
 	app.use("/api/quiz", quizRouter)
 	app.use("/api/user", userRouter)
 	app.use("/static", express.static(path.join(__dirname, "../static")))
+	// if (env.NODE_ENV !== "development") {
 	app.use(express.static(path.join(__dirname, "../client")))
 
 	app.use((req, res) => {
 		res.status(200).sendFile(path.join(__dirname, "../client/index.html"))
 	})
+	// }
 
 	return app
 }

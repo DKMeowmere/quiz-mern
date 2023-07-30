@@ -12,6 +12,7 @@ import { createToken } from "../utils/createToken.js"
 import { handleControllerError } from "../utils/handleControllerError.js"
 import { removeFile } from "../utils/removeFile.js"
 import Quiz from "../models/quiz.js"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 export async function getUsers(req: CustomRequest, res: Response) {
 	try {
@@ -74,7 +75,6 @@ export async function signUp(req: CustomRequest, res: Response) {
 				statusCode: 400,
 			})
 		}
-
 		const { name, email, biography, password } = req.body
 
 		const result = userSchema.safeParse({ name, email, biography, password })
@@ -116,6 +116,27 @@ export async function login(req: CustomRequest, res: Response) {
 	try {
 		const { email, password } = req.body
 
+		const authorization = req.headers.authorization
+
+		if (authorization) {
+			//if not login and password, try to login with token
+			const token = authorization.split(" ")[1]
+
+			console.log(token)
+			const { payload } = jwt.verify(token, env.TOKEN_SECRET) as JwtPayload
+			console.log(payload)
+			const user = await User.findById(payload._id)
+			if (!user) {
+				throw Error("Błąd w logowaniu")
+			}
+
+			res.json({
+				user,
+				token,
+			})
+			return
+		}
+
 		if (!email || !password) {
 			throw new CustomError({
 				message: "Musisz podać email i hasło",
@@ -127,7 +148,7 @@ export async function login(req: CustomRequest, res: Response) {
 
 		if (!user) {
 			throw new CustomError({
-				message: "Nie podano użytkownika o podanym emailu",
+				message: "Nie znaleziono użytkownika o podanym emailu",
 				statusCode: 404,
 			})
 		}
@@ -146,7 +167,6 @@ export async function login(req: CustomRequest, res: Response) {
 				statusCode: 400,
 			})
 		}
-
 		const token = createToken(user)
 		res.json({ user, token })
 	} catch (err) {
@@ -170,7 +190,7 @@ export async function updateUser(req: CustomRequest, res: Response) {
 			throw new CustomError({ message: "Nie poprawne id", statusCode: 400 })
 		}
 
-		if (req.user?._id !== id) {
+		if (req.user?._id?.toString() !== id) {
 			throw new CustomError({
 				message: "Możesz tylko zaaktualizować swoje konto",
 				statusCode: 403,
@@ -231,7 +251,7 @@ export async function deleteUser(req: CustomRequest, res: Response) {
 			throw new CustomError({ message: "Nie poprawne id", statusCode: 400 })
 		}
 
-		if (req.user?._id !== id) {
+		if (req.user?._id?.toString() !== id) {
 			throw new CustomError({
 				message: "Możesz tylko usunąć swoje konto",
 				statusCode: 403,
