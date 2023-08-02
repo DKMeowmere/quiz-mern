@@ -8,6 +8,7 @@ import { setupCustomRequest } from "../middlewares/setupCustomRequest.js"
 import path from "path"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
+import resetServerAndDb from "./resetServer.js"
 
 function createServer() {
 	const app = express()
@@ -28,16 +29,18 @@ function createServer() {
 	app.use((req, res, next) => setupCustomRequest(req, res, next))
 
 	app.use("/healthcheck", (req, res) => res.status(200))
+	if (env.NODE_ENV !== "production") {
+		app.use("/reset", (req, res) => resetServerAndDb(req, res))
+	}
+
 	app.use("/api/quiz", quizRouter)
 	app.use("/api/user", userRouter)
 	app.use("/static", express.static(path.join(__dirname, "../static")))
-	// if (env.NODE_ENV !== "development") {
 	app.use(express.static(path.join(__dirname, "../client")))
 
 	app.use((req, res) => {
 		res.status(200).sendFile(path.join(__dirname, "../client/index.html"))
 	})
-	// }
 
 	return app
 }

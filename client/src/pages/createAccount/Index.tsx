@@ -49,19 +49,28 @@ export default function CreateAccount() {
 				<h1>Stwórz konto</h1>
 				<div className="input-container">
 					<p>Podaj nazwe</p>
-					<input value={name} onChange={e => setName(e.target.value)} />
+					<input
+						value={name}
+						onChange={e => setName(e.target.value)}
+						data-cy="name-input"
+					/>
 				</div>
 				<div className="input-container">
 					<p>Podaj email</p>
-					<input value={email} onChange={e => setEmail(e.target.value)} />
+					<input
+						value={email}
+						onChange={e => setEmail(e.target.value)}
+						data-cy="email-input"
+					/>
 				</div>
 				<div className="input-container">
 					<p>Podaj hasło</p>
 					<PasswordInput
 						value={password}
 						onChange={e => setPassword(e.target.value)}
-            width="100%"
+						width="100%"
 						height="60px"
+						dataCy="password-input"
 					/>
 				</div>
 				<div className="input-container">
@@ -71,6 +80,7 @@ export default function CreateAccount() {
 						height="200px"
 						value={biography}
 						onChange={e => setBiography(e.target.value)}
+						data-cy="biography-input"
 					/>
 				</div>
 				<div className="input-container">
@@ -79,6 +89,7 @@ export default function CreateAccount() {
 						width="100%"
 						height="200px"
 						type="file"
+						data-cy="avatar-input"
 						onChange={e => {
 							if (e.target.files) {
 								setAvatar(e.target.files[0])
@@ -100,6 +111,7 @@ export default function CreateAccount() {
 					height="60px"
 					bgColor={theme.colors.main}
 					textColor="#fff"
+					data-cy="submit-btn"
 				>
 					Zatwierdź
 				</Button>

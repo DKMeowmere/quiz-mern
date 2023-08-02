@@ -122,9 +122,7 @@ export async function login(req: CustomRequest, res: Response) {
 			//if not login and password, try to login with token
 			const token = authorization.split(" ")[1]
 
-			console.log(token)
 			const { payload } = jwt.verify(token, env.TOKEN_SECRET) as JwtPayload
-			console.log(payload)
 			const user = await User.findById(payload._id)
 			if (!user) {
 				throw Error("Błąd w logowaniu")

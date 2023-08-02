@@ -16,7 +16,7 @@ export default function Alerts() {
 				}, alertLifeTime)
 
 				return (
-					<Alert type={alert.type} key={alert.id}>
+					<Alert type={alert.type} key={alert.id} data-cy="alert">
 						<AlertIcon type={alert.type} />
 						{alert.body}
 					</Alert>

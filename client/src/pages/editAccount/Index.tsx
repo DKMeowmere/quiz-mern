@@ -20,7 +20,7 @@ export default function EditAccount() {
 	const [user, setUser] = useState<User | null>(null)
 	const { id } = useParams()
 	const navigate = useNavigate()
-	const [isModalOpen, setIsModalOpen] = useState(true)
+	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [avatar, setAvatar] = useState<File | null>(null)
 	const [avatarUrl, setAvatarUrl] = useState("")
 	const { handleErrorWithAlert } = useUtils()
@@ -157,6 +157,7 @@ export default function EditAccount() {
 							type="text"
 							value={user.name}
 							onChange={e => setUser({ ...user, name: e.target.value })}
+							data-cy="name-input"
 						/>
 					</div>
 					<div className="input-container">
@@ -166,6 +167,7 @@ export default function EditAccount() {
 							width="100%"
 							value={user.biography}
 							onChange={e => setUser({ ...user, biography: e.target.value })}
+							data-cy="biography-input"
 						/>
 					</div>
 					<div className="input-container">
@@ -204,6 +206,7 @@ export default function EditAccount() {
 						height="60px"
 						width="100%"
 						textColor="#fefefe"
+						data-cy="submit-btn"
 					>
 						Zaaktualizuj profil
 					</Button>
@@ -215,6 +218,7 @@ export default function EditAccount() {
 						onClick={() => setIsModalOpen(true)}
 						type="button"
 						className="delete-account-btn"
+						data-cy="open-delete-account-modal-btn"
 					>
 						Usuń konto
 					</Button>
@@ -230,6 +234,7 @@ export default function EditAccount() {
 						textColor="#fefefe"
 						onClick={() => deleteAccount()}
 						type="button"
+						data-cy="delete-account-btn"
 					>
 						Usuń konto
 					</Button>

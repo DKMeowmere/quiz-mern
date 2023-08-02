@@ -67,14 +67,15 @@ export default function Profile() {
 						src={`${import.meta.env.VITE_SERVER_URL}${profileAvatar}`}
 						alt="zdjęcie profilowe"
 						className="avatar"
+						data-cy="avatar"
 						onError={() => {
 							setProfileAvatar(
 								`${import.meta.env.VITE_SERVER_URL}/static/defaultAvatar.jpg`
 							)
 						}}
 					/>
-					<h1>{user.name}</h1>
-					{user.biography && <p>{user.biography}</p>}
+					<h1 data-cy="user-name">{user.name}</h1>
+					{user.biography && <p data-cy="user-biography">{user.biography}</p>}
 					<Quizes quizes={user.userQuizes} />
 				</>
 			)}
