@@ -3,7 +3,7 @@ import { z } from "zod"
 export const answerTypeEnum = ["TEXT", "IMAGE", "AUDIO"] as const
 
 export const answerSchema = z.object({
-	_id: z.string().nullish(),
+	_id: z.string(),
 	title: z.string(),
 	type: z.enum(answerTypeEnum),
 	fileLocation: z.string().nullish().catch(undefined),
