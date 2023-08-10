@@ -4,7 +4,7 @@ import env from "./config/envVariables.js"
 
 async function start() {
 	try {
-		const app = createServer()
+		const app = createServer() 
     mongoose.set("strictQuery", false)
 		await mongoose.connect(env.MONGO_URI)
 		console.log("Connected to db")

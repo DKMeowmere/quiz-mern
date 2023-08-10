@@ -9,6 +9,9 @@ import path from "path"
 import { HydratedDocument } from "mongoose"
 import mongoose from "mongoose"
 import { handleControllerError } from "../utils/handleControllerError.js"
+import { questionTypeSet } from "../types/question.js"
+import hasTrueAnswer from "../utils/quiz/hasTrueAnswer.js"
+import { answerTypeSet } from "../types/answer.js"
 
 export async function getQuizes(req: CustomRequest, res: Response) {
 	try {
@@ -48,11 +51,12 @@ export async function createQuiz(req: CustomRequest, res: Response) {
 			})
 		}
 
-		const { title, questions } = req.body
+		const { title, questions, fileLocation } = req.body
 
 		const result = quizSchema.safeParse({
 			title,
 			questions: JSON.parse(questions),
+			fileLocation,
 		})
 
 		if (result.success === false) {
@@ -60,19 +64,31 @@ export async function createQuiz(req: CustomRequest, res: Response) {
 		}
 		const body = result.data
 
+		for (let i = 0; i < body.questions.length; i++) {
+			const question = body.questions[i]
+
+			if (!hasTrueAnswer(question.answers)) {
+				throw new CustomError({
+					message: `Brak podpawnej odpowiedzi dla pytania: ${question.title}`,
+					statusCode: 400,
+				})
+			}
+		}
+
 		const quiz = await Quiz.create({ ...body, creatorId: req.user._id })
 
 		await handleMainQuizFile(req, quiz)
 		await handleQuizQuestionFiles(req, quiz)
 		await handleQuizAnswerFiles(req, quiz)
 		await quiz.save()
-		res.status(201).json(quiz)
 
-		req.pathToFilesProvidedOnLastReq?.forEach(async path => {
-			if (!req.pathToFilesAddedOnLastReq?.includes(path)) {
+		req.pathToFilesProvidedOnLastReq!.forEach(async path => {
+			if (!req.pathToFilesAddedOnLastReq!.has(path)) {
 				await removeFile(path)
 			}
 		})
+
+		res.status(201).json(quiz)
 	} catch (err) {
 		await handleControllerError(req, res, err)
 	}
@@ -123,17 +139,11 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 		}
 
 		const { id } = req.params
-		const { title, questions } = req.body
+		const { title } = req.body
 
-		const result = quizSchema.safeParse({
-			title,
-			questions: JSON.parse(questions),
-		})
-
-		if (result.success === false) {
-			throw new CustomError({ message: result.error.message, statusCode: 400 })
+		if (!title) {
+			throw new CustomError({ message: "Brak tytułu quizu", statusCode: 400 })
 		}
-		const body = result.data
 
 		if (!id) {
 			throw new CustomError({ message: "brak id quizu", statusCode: 400 })
@@ -160,23 +170,242 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 			})
 		}
 
-		quiz.title = body.title
-		quiz.questions = body.questions
-		await handleMainQuizFile(req, quiz)
-		await handleQuizQuestionFiles(req, quiz)
-		await handleQuizAnswerFiles(req, quiz)
-		await quiz.save()
+		if (req.file) {
+			const prevFilePath = req.file.path
+			const newFileName = `${quiz._id}${path.extname(req.file.originalname)}`
+			const absolutePathToFile = path.resolve(
+				`./static/uploads/quiz/${newFileName}`
+			)
+			await fs.rename(prevFilePath, absolutePathToFile)
+		}
 
-		const updatedQuiz = await Quiz.findById(id)
+		const updatedQuiz = await Quiz.findByIdAndUpdate(
+			id,
+			{
+				title,
+			},
+			{ new: true }
+		)
+
 		res.json(updatedQuiz)
 
 		req.pathToFilesProvidedOnLastReq?.forEach(async path => {
-			if (!req.pathToFilesAddedOnLastReq?.includes(path)) {
+			if (!req.pathToFilesAddedOnLastReq!.has(path)) {
 				await removeFile(path)
 			}
 		})
 	} catch (err) {
 		await handleControllerError(req, res, err)
+	}
+}
+
+export async function updateQuizQuestion(req: CustomRequest, res: Response) {
+	try {
+		if (!req.isFilesValidationPassed) {
+			throw new CustomError({
+				message:
+					"Plik nie może zawierać '/' oraz musi posiadać rozszerzenie .jpg  .jpeg, .png lub .mp3",
+				statusCode: 400,
+			})
+		}
+
+		const { quizId, questionId } = req.params
+		const { title, type } = req.body
+
+		if (!mongoose.isValidObjectId(quizId)) {
+			throw new CustomError({
+				message: "Niepoprawne id quizu",
+				statusCode: 400,
+			})
+		}
+
+		if (!mongoose.isValidObjectId(questionId)) {
+			throw new CustomError({
+				message: "Niepoprawne id quizu",
+				statusCode: 400,
+			})
+		}
+
+		if (!title) {
+			throw new CustomError({ message: "Brak tytułu pytania", statusCode: 400 })
+		}
+
+		if (!questionTypeSet.has(type)) {
+			throw new CustomError({
+				message: "Niepoprawny typ pytania",
+				statusCode: 400,
+			})
+		}
+
+		const quiz = await Quiz.findById(quizId)
+
+		if (!quiz) {
+			throw new CustomError({
+				message: "Nie znaleziono quizu",
+				statusCode: 404,
+			})
+		}
+
+		const questionIndex = quiz.questions.findIndex(
+			question => question._id?.toString() === questionId
+		)
+
+		if (questionIndex === -1) {
+			throw new CustomError({
+				message: "Nie znaleziono pytania o podanym id",
+				statusCode: 404,
+			})
+		}
+
+		const question = quiz.questions[questionIndex]
+		if (req.file) {
+			const prevFilePath = req.file.path
+			const newFileName = `${questionId}${path.extname(req.file.originalname)}`
+			const absolutePathToFile = path.resolve(
+				`./static/uploads/quiz/${newFileName}`
+			)
+			await fs.rename(prevFilePath, absolutePathToFile)
+			question.fileLocation = `/static/uploads/quiz/${newFileName}`
+		}
+
+		question.title = title
+		question.type = type
+
+		if (question.type === "TEXT") {
+			question.fileLocation && removeFile(question.fileLocation)
+			question.fileLocation = null
+		}
+
+		await quiz.save()
+
+		res.json(question)
+	} catch (err) {
+		handleControllerError(req, res, err)
+	}
+}
+
+export async function updateQuizAnswer(req: CustomRequest, res: Response) {
+	try {
+		if (!req.isFilesValidationPassed) {
+			throw new CustomError({
+				message:
+					"Plik nie może zawierać '/' oraz musi posiadać rozszerzenie .jpg  .jpeg, .png lub .mp3",
+				statusCode: 400,
+			})
+		}
+
+		const { quizId, questionId, answerId } = req.params
+		const { title, type, isTrue } = req.body
+
+		if (!mongoose.isValidObjectId(quizId)) {
+			throw new CustomError({
+				message: "Niepoprawne id quizu",
+				statusCode: 400,
+			})
+		}
+
+		if (!mongoose.isValidObjectId(questionId)) {
+			throw new CustomError({
+				message: "Niepoprawne id quizu",
+				statusCode: 400,
+			})
+		}
+
+		if (!mongoose.isValidObjectId(answerId)) {
+			throw new CustomError({
+				message: "Niepoprawne id odpowiedzi",
+				statusCode: 400,
+			})
+		}
+
+		if (!title) {
+			throw new CustomError({ message: "Brak tytułu pytania", statusCode: 400 })
+		}
+
+		if (!answerTypeSet.has(type)) {
+			throw new CustomError({
+				message: "Niepoprawny typ pytania",
+				statusCode: 400,
+			})
+		}
+
+		if (isTrue !== "true" && isTrue !== "false") {
+			throw new CustomError({
+				message: "isTrue musi mieć wartość 'true' lub 'false'",
+				statusCode: 400,
+			})
+		}
+
+		const quiz = await Quiz.findById(quizId)
+
+		if (!quiz) {
+			throw new CustomError({
+				message: "Nie znaleziono quizu",
+				statusCode: 404,
+			})
+		}
+
+		const questionIndex = quiz.questions.findIndex(
+			question => question._id?.toString() === questionId
+		)
+
+		if (questionIndex === -1) {
+			throw new CustomError({
+				message: "Nie znaleziono pytania o podanym id",
+				statusCode: 404,
+			})
+		}
+
+		const question = quiz.questions[questionIndex]
+		const answerIndex = question.answers.findIndex(
+			answer => answer._id?.toString() === answerId
+		)
+
+		if (answerIndex === -1) {
+			throw new CustomError({
+				message: "Nie znaleziono odpowiedzi o podanym id",
+				statusCode: 404,
+			})
+		}
+
+		const answer = question.answers[answerIndex]
+
+		const newAnswers = question.answers.map(prevAnswer =>
+			prevAnswer._id?.toString() === answerId
+				? { ...prevAnswer, isTrue }
+				: prevAnswer
+		)
+
+		if (!hasTrueAnswer(newAnswers)) {
+			throw new CustomError({
+				message: `Przynajmniej jedna odpowiedź w pytaniu musi być poprawna`,
+				statusCode: 400,
+			})
+		}
+
+		if (req.file) {
+			const prevFilePath = req.file.path
+			const newFileName = `${answerId}${path.extname(req.file.originalname)}`
+			const absolutePathToFile = path.resolve(
+				`./static/uploads/quiz/${newFileName}`
+			)
+			await fs.rename(prevFilePath, absolutePathToFile)
+			answer.fileLocation = `/static/uploads/quiz/${newFileName}`
+		}
+
+		answer.title = title
+		answer.type = type
+		answer.isTrue = isTrue
+
+		if (answer.type === "TEXT") {
+			answer.fileLocation && removeFile(answer.fileLocation)
+			answer.fileLocation = null
+		}
+		await quiz.save()
+
+		res.json(answer)
+	} catch (err) {
+		handleControllerError(req, res, err)
 	}
 }
 
@@ -246,71 +475,59 @@ async function handleMainQuizFile(
 		await removeFile(path.resolve(`.${quiz.fileLocation}`))
 	}
 
-	const pathToMainImage = req.pathToFilesProvidedOnLastReq?.find(path =>
-		path.split("/").at(-1)?.startsWith("quiz-main")
-	)
+	const mainImageIndex = req.pathToFilesProvidedOnLastReq!.findIndex(path => {
+		const slash = process.platform === "win32" ? "\\" : "/"
+		return path.split(slash).at(-1) === quiz.fileLocation
+	})
 
-	if (!pathToMainImage) {
-		throw new CustomError({
-			message: "Nie znaleziono głównego zdjęcia quizu",
-			statusCode: 400,
-		})
+	if (mainImageIndex === -1) {
+		quiz.fileLocation = "/static/uploads/defaultQuiz.jpg"
+		return
 	}
 
-	const fileName = pathToMainImage.split("/").at(-1)
-	const quizMainStringLength = "quiz-main-".length
+	const filePath = req.pathToFilesProvidedOnLastReq![mainImageIndex]
+	const fileName = filePath.split("/").at(-1)
 
 	if (!fileName) {
-		throw new CustomError({
-			message: "Zła nazwa pliku",
-			statusCode: 400,
-		})
+		throw new CustomError({ message: "Brak nazwy zdjecia", statusCode: 400 })
 	}
+	const fileObj = path.parse(fileName)
 
-	const newFileName = `${
-		path.parse(fileName.slice(quizMainStringLength)).name
-	}-${quiz._id}${path.extname(fileName)}`
+	const newFileName = `${quiz._id}${fileObj.ext}`
 
 	const absolutePathToFile = path.resolve(
 		`./static/uploads/quiz/${newFileName}`
 	)
 
-	await fs.rename(pathToMainImage, absolutePathToFile)
+	await fs.rename(filePath, absolutePathToFile)
 
 	quiz.fileLocation = `/static/uploads/quiz/${newFileName}`
-	req.pathToFilesAddedOnLastReq?.push(absolutePathToFile)
+	req.pathToFilesAddedOnLastReq!.add(absolutePathToFile)
 }
 
 async function handleQuizQuestionFiles(
 	req: CustomRequest,
 	quiz: HydratedDocument<QuizType>
 ) {
-	//file name should look like question-{question-number}-filename.extension
-	//after renaming it should look like filename-{question-id}.extension
-	if (!req.pathToFilesProvidedOnLastReq) {
-		return
-	}
-
 	for (let i = 0; i < quiz.questions.length; i++) {
 		const question = quiz.questions[i]
-		const possibleQuestionFileTypes = ["IMAGE", "AUDIO"]
+		const possibleQuestionFileTypes = new Set(["IMAGE", "AUDIO"])
 
-		if (!possibleQuestionFileTypes.includes(question.type)) {
+		if (!possibleQuestionFileTypes.has(question.type)) {
 			continue
 		}
 
-		const fileIndex = req.pathToFilesProvidedOnLastReq.findIndex(path =>
-			path.split("/").at(-1)?.startsWith(`question-${i}`)
-		)
-		const file = req.pathToFilesProvidedOnLastReq[fileIndex]
+		const fileIndex = req.pathToFilesProvidedOnLastReq!.findIndex(path => {
+			const slash = process.platform === "win32" ? "\\" : "/"
+			return path.split(slash).at(-1) === question.fileLocation
+		})
 
-		if (!file) {
-			throw new CustomError({
-				message: `Nie znaleziono pliku dla pytania: '${question.title}'`,
-				statusCode: 400,
-			})
+		if (fileIndex === -1) {
+			question.fileLocation = null
+			continue
 		}
 
+		const file = req.pathToFilesProvidedOnLastReq![fileIndex]
 		const fileName = file.split("/").at(-1)
 
 		if (!fileName) {
@@ -320,33 +537,21 @@ async function handleQuizQuestionFiles(
 			})
 		}
 
-		const questionStringLength = "question".length
-		const questionIndexLength = fileName.split("-")[1].length
-		const dashNumberToTruncate = 2
-		const numberToTruncate =
-			questionStringLength + questionIndexLength + dashNumberToTruncate
-		const filenameWithTruncatedStart = fileName.slice(numberToTruncate)
-
-		const newFileName = `${path.parse(filenameWithTruncatedStart).name}-${
-			question._id
-		}${path.extname(fileName)}`
+		const fileObj = path.parse(fileName)
+		const newFileName = `${question._id}${fileObj.ext}`
 
 		const absolutePathToFile = path.resolve(
 			`./static/uploads/quiz/${newFileName}`
 		)
 
-		if (question.fileLocation) {
-			await removeFile(path.resolve(`.${question.fileLocation}`))
-		}
-
 		await fs.rename(
-			req.pathToFilesProvidedOnLastReq[fileIndex],
+			req.pathToFilesProvidedOnLastReq![fileIndex],
 			absolutePathToFile
 		)
 
 		question.fileLocation = `/static/uploads/quiz/${newFileName}`
-		req.pathToFilesProvidedOnLastReq[fileIndex] = absolutePathToFile
-		req.pathToFilesAddedOnLastReq?.push(absolutePathToFile)
+		req.pathToFilesProvidedOnLastReq![fileIndex] = absolutePathToFile
+		req.pathToFilesAddedOnLastReq!.add(absolutePathToFile)
 	}
 }
 
@@ -354,33 +559,26 @@ async function handleQuizAnswerFiles(
 	req: CustomRequest,
 	quiz: HydratedDocument<QuizType>
 ) {
-	//file name should look like answer-{questionNumber}-{answerNumber}-filename.extension
-	//after renaming it should look like filename-{answer-id}.extension
-	if (!req.pathToFilesProvidedOnLastReq) {
-		return
-	}
-
 	for (let i = 0; i < quiz.questions.length; i++) {
 		const question = quiz.questions[i]
 
 		for (let j = 0; j < question.answers.length; j++) {
 			const answer = question.answers[j]
-			const possibleAnswerFileTypes = ["IMAGE", "AUDIO"]
+			const possibleAnswerFileTypes = new Set(["IMAGE", "AUDIO"])
 
-			if (!possibleAnswerFileTypes.includes(answer.type)) {
+			if (!possibleAnswerFileTypes.has(answer.type)) {
 				continue
 			}
 
-			const fileIndex = req.pathToFilesProvidedOnLastReq.findIndex(path =>
-				path.split("/").at(-1)?.startsWith(`answer-${i}-${j}`)
-			)
-			const file = req.pathToFilesProvidedOnLastReq[fileIndex]
+			const fileIndex = req.pathToFilesProvidedOnLastReq!.findIndex(path => {
+				const slash = process.platform === "win32" ? "\\" : "/"
+				return path.split(slash).at(-1) === answer.fileLocation
+			})
+			const file = req.pathToFilesProvidedOnLastReq![fileIndex]
 
-			if (!file) {
-				throw new CustomError({
-					message: `Nie znaleziono pliku dla pytania: '${question.title} dla odpowiedzi ${answer.title}'`,
-					statusCode: 400,
-				})
+			if (fileIndex === -1) {
+				answer.fileLocation = null
+				continue
 			}
 
 			const fileName = file.split("/").at(-1)
@@ -392,20 +590,7 @@ async function handleQuizAnswerFiles(
 				})
 			}
 
-			const answerStringLength = "answer".length
-			const questionIndexLength = fileName.split("-")[1].length
-			const answerIndexLength = fileName.split("-")[2].length
-			const dashNumberToTruncate = 3
-			const numberToTruncate =
-				answerStringLength +
-				questionIndexLength +
-				answerIndexLength +
-				dashNumberToTruncate
-			const filenameWithTruncatedStart = fileName.slice(numberToTruncate)
-
-			const newFileName = `${path.parse(filenameWithTruncatedStart).name}-${
-				answer._id
-			}${path.extname(fileName)}`
+			const newFileName = `${answer._id}${path.extname(fileName)}`
 
 			const absolutePathToFile = path.resolve(
 				`./static/uploads/quiz/${newFileName}`
@@ -416,13 +601,13 @@ async function handleQuizAnswerFiles(
 			}
 
 			await fs.rename(
-				req.pathToFilesProvidedOnLastReq[fileIndex],
+				req.pathToFilesProvidedOnLastReq![fileIndex],
 				absolutePathToFile
 			)
 
 			answer.fileLocation = `/static/uploads/quiz/${newFileName}`
-			req.pathToFilesProvidedOnLastReq[fileIndex] = absolutePathToFile
-			req.pathToFilesAddedOnLastReq?.push(absolutePathToFile)
+			req.pathToFilesProvidedOnLastReq![fileIndex] = absolutePathToFile
+			req.pathToFilesAddedOnLastReq!.add(absolutePathToFile)
 		}
 	}
 }

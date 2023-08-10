@@ -5,6 +5,6 @@ import { User as UserType } from "./user.js"
 export interface CustomRequest extends RequestType {
 	isFilesValidationPassed?: boolean
 	pathToFilesProvidedOnLastReq?: string[]
-	pathToFilesAddedOnLastReq?: string[]
+	pathToFilesAddedOnLastReq?: Set<string>
 	user?: UserType | null
 }

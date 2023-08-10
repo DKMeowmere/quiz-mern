@@ -6,7 +6,7 @@ export const answerSchema = z.object({
 	_id: z.string(),
 	title: z.string(),
 	type: z.enum(answerTypeEnum),
-	fileLocation: z.string().nullish().catch(undefined),
+	fileLocation: z.string().nullable().catch(null),
 	isTrue: z.boolean(),
 })
 

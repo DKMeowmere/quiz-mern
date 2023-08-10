@@ -1,4 +1,4 @@
-import { CustomRequest } from "../types/customRequest.js"
+import { CustomRequest } from "../types/customRequest"
 import { NextFunction, Response } from "express"
 
 export function setupCustomRequest(
@@ -8,7 +8,7 @@ export function setupCustomRequest(
 ) {
 	req.isFilesValidationPassed = true
 	req.pathToFilesProvidedOnLastReq = []
-	req.pathToFilesAddedOnLastReq = []
+	req.pathToFilesAddedOnLastReq = new Set()
 	req.user = null
 	next()
 }

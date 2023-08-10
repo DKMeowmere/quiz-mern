@@ -19,9 +19,6 @@ export const questionSchema = new mongoose.Schema<QuestionType>(
 		fileLocation: {
 			type: String,
 		},
-		fileDescription: {
-			type: String,
-		},
 		answers: {
 			type: [answerSchema],
 			required: true,

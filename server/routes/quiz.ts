@@ -8,6 +8,8 @@ import {
 	getQuiz,
 	getQuizes,
 	updateQuiz,
+	updateQuizAnswer,
+	updateQuizQuestion,
 } from "../controllers/quiz.js"
 import { requireAuth } from "../middlewares/auth.js"
 
@@ -57,6 +59,12 @@ router
 router
 	.route("/:id")
 	.get(getQuiz)
-	.patch(requireAuth, upload.array("files"), updateQuiz)
+	.patch(requireAuth, upload.single("file"), updateQuiz)
 	.delete(requireAuth, deleteQuiz)
+router
+	.route("/:quizId/:questionId")
+	.patch(requireAuth, upload.single("file"), updateQuizQuestion)
+  router
+	.route("/:quizId/:questionId/:answerId")
+	.patch(requireAuth, upload.single("file"), updateQuizAnswer)
 export default router
