@@ -8,10 +8,10 @@ export const questionSchema = z.object({
 	_id: z.string().nullish(),
 	title: z.string(),
 	type: z.enum(["TEXT", "IMAGE", "AUDIO"]),
-	fileLocation:  z.string().nullable().catch(null),
+	fileLocation: z.string().nullable().catch(null),
 	answers: z
 		.array(answerSchema)
-		.nonempty({ message: "Musisz podać przynajmniej 2 odpowiedzi w pytaniu" })
+		.min(2, { message: "Musisz podać przynajmniej 2 odpowiedzi w pytaniu" })
 		.max(4, { message: "Pytanie może składać się z maksymalnie 4 odpowiedzi" }),
 })
 

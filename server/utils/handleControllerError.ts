@@ -3,6 +3,7 @@ import env from "../config/envVariables.js"
 import CustomError from "../types/customError.js"
 import { CustomRequest } from "../types/customRequest.js"
 import { removeFiles } from "./removeFile.js"
+import { universalError } from "./errors/universal.js"
 
 export async function handleControllerError(
 	req: CustomRequest,
@@ -11,10 +12,16 @@ export async function handleControllerError(
 ) {
 	env.NODE_ENV === "development" && console.log(err)
 
-  await removeFiles(req.pathToFilesProvidedOnLastReq || [])
+	await removeFiles(req.pathToFilesProvidedOnLastReq!)
 	if (err instanceof CustomError) {
 		res.status(err.statusCode).json({ error: err.message })
+	} else if (env.NODE_ENV === "development" || env.NODE_ENV === "test") {
+		res.status(universalError.statusCode).json({
+			error: err instanceof Error ? err.message : universalError.message,
+		})
 	} else {
-		res.status(400).json({ error: env.UNIVERSAL_ERROR_MESSAGE })
+		res
+			.status(universalError.statusCode)
+			.json({ error: universalError.message })
 	}
 }

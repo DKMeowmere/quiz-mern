@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema<UserType>(
 			type: String,
 			required: true,
 		},
-		biography: { type: String, required: true },
+		biography: { type: String },
 		email: { type: String, required: true, unique: true },
 		avatarLocation: { type: String, default: "" },
 		password: { type: String, required: true },

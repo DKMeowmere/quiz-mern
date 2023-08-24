@@ -4,6 +4,8 @@ import CustomError from "../types/customError.js"
 import env from "../config/envVariables.js"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import User from "../models/user.js"
+import { authNeeded, userInTokenNotFound } from "../utils/errors/user.js"
+import { handleControllerError } from "../utils/handleControllerError.js"
 
 export async function requireAuth(
 	req: CustomRequest,
@@ -14,32 +16,20 @@ export async function requireAuth(
 		const { authorization } = req.headers
 
 		if (!authorization) {
-			throw new CustomError({
-				message: "Musisz być zalogowany, żeby to zrobić",
-				statusCode: 401,
-			})
+			throw new CustomError(authNeeded)
 		}
 
-		const token = authorization?.split(" ")[1]
+		const token = authorization.split(" ")[1]
 		const { payload } = jwt.verify(token, env.TOKEN_SECRET) as JwtPayload
 		const user = await User.findById(payload._id)
 
 		if (!user) {
-			throw new CustomError({
-				message: "Użytkownik podany w tokenie, nie istnieje",
-				statusCode: 401,
-			})
+      throw new CustomError(userInTokenNotFound)
 		}
-
+    
 		req.user = user
 		next()
 	} catch (err) {
-		env.NODE_ENV === "development" && console.log(err)
-
-		if (err instanceof CustomError) {
-			res.status(err.statusCode).json({ error: err.message })
-		} else {
-			res.status(400).json({ error: env.UNIVERSAL_ERROR_MESSAGE })
-		}
+		handleControllerError(req, res, err)
 	}
 }

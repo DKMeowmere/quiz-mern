@@ -2,14 +2,12 @@ import express from "express"
 import multer from "multer"
 import path from "path"
 import { CustomRequest } from "../types/customRequest.js"
-import {
-	deleteUser,
-	getUser,
-	getUsers,
-	login,
-	signUp,
-	updateUser,
-} from "../controllers/user.js"
+import { deleteUser } from "../controllers/user/deleteUser.js"
+import { getUser } from "../controllers/user/getUser.js"
+import { getUsers } from "../controllers/user/getUsers.js"
+import { login } from "../controllers/user/login.js"
+import { signUp } from "../controllers/user/signUp.js"
+import { updateUser } from "../controllers/user/updateUser.js"
 import { requireAuth } from "../middlewares/auth.js"
 
 const router = express.Router()

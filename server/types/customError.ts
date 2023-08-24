@@ -1,11 +1,11 @@
-type Props = {
+export type CustomErrorType = {
 	message: string
 	statusCode: number
 }
 
 class CustomError extends Error {
 	statusCode: number
-	constructor({ message, statusCode }: Props) {
+	constructor({ message, statusCode }: CustomErrorType) {
 		super(message)
 		this.message = message
 		this.statusCode = statusCode

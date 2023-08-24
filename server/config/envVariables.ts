@@ -23,7 +23,6 @@ const unvalidatedEnv = {
 	TOKEN_SECRET: process.env.TOKEN_SECRET,
 	CLIENT_APP_URL: process.env.CLIENT_APP_URL,
 	NODE_ENV: process.env.NODE_ENV,
-	UNIVERSAL_ERROR_MESSAGE: process.env.UNIVERSAL_ERROR_MESSAGE,
 	SALT_ROUNDS,
 }
 

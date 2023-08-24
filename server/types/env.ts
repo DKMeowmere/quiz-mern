@@ -8,7 +8,6 @@ export const envSchema = z.object({
 	TOKEN_SECRET: z.string(),
 	CLIENT_APP_URL: z.string(),
 	NODE_ENV: z.enum(nodeEnvEnum),
-	UNIVERSAL_ERROR_MESSAGE: z.string(),
 	SALT_ROUNDS: z.number().positive(),
 })
 
