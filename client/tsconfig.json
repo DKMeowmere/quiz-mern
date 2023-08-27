@@ -15,8 +15,14 @@
 		"isolatedModules": true,
 		"noEmit": true,
 		"jsx": "react-jsx",
-		"types": ["cypress", "node"]
+		"types": ["cypress", "node"],
+		"paths": { "@backend/*": ["../server/*"] }
 	},
-	"include": ["cypress", "src"],
+	"include": [
+		"cypress",
+		"src",
+		"../server/types/client/types",
+		"../server/types/client/alert.ts"
+	],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { QuizState } from "../../types/quizState"
-import { Quiz } from "../../types/quiz"
-import { Answer } from "../../types/answer"
-import { Question } from "../../types/question"
+import { QuizState } from "@backend/types/client/quizState"
+import { QuizClient } from "@backend/types/quiz"
+import { AnswerClient } from "@backend/types/answer"
+import {  QuestionClient } from "@backend/types/question"
 
 const initialState: QuizState = {
 	quiz: null,
@@ -32,7 +32,7 @@ const quizSlice = createSlice({
 				fileLocation: undefined,
 			}
 		},
-		setQuiz: (state, action: PayloadAction<Quiz>) => {
+		setQuiz: (state, action: PayloadAction<QuizClient>) => {
 			const quiz = action.payload
 
 			state.quiz = quiz
@@ -40,7 +40,7 @@ const quizSlice = createSlice({
 		startGame: state => {
 			state.isGameStarted = true
 		},
-		answerQuestion: (state, action: PayloadAction<Answer>) => {
+		answerQuestion: (state, action: PayloadAction<AnswerClient>) => {
 			const answer = action.payload
 
 			if (answer.isTrue) {
@@ -50,7 +50,7 @@ const quizSlice = createSlice({
 		endGame: state => {
 			state.isGameStarted = false
 		},
-		addQuestion: (state, action: PayloadAction<Question>) => {
+		addQuestion: (state, action: PayloadAction<QuestionClient>) => {
 			if (!state.quiz) {
 				throw new Error("Quiz is null")
 			}
@@ -59,7 +59,7 @@ const quizSlice = createSlice({
 
 			state.quiz.questions.push(question)
 		},
-		editQuestion: (state, action: PayloadAction<Question>) => {
+		editQuestion: (state, action: PayloadAction<QuestionClient>) => {
 			if (!state.quiz) {
 				throw new Error("Quiz is null")
 			}
@@ -89,7 +89,7 @@ const quizSlice = createSlice({
 		},
 		addAnswer: (
 			state,
-			action: PayloadAction<{ questionId: string; answer: Answer }>
+			action: PayloadAction<{ questionId: string; answer: AnswerClient }>
 		) => {
 			if (!state.quiz) {
 				throw new Error("Quiz is null")
@@ -113,7 +113,7 @@ const quizSlice = createSlice({
 			action: PayloadAction<{
 				questionId: string
 				answerId: string
-				answer: Answer
+				answer: AnswerClient
 			}>
 		) => {
 			if (!state.quiz) {

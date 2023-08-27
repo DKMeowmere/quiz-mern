@@ -1,4 +1,4 @@
-import { User } from "../../src/types/user"
+import { User } from "@backend/types/user"
 
 const email = `herceg.bosna-${crypto.randomUUID()}@mostar.hb`
 

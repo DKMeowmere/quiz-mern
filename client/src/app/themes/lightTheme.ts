@@ -1,4 +1,4 @@
-import { Theme } from "../../types/theme"
+import { Theme } from "@backend/types/client/theme"
 
 const lightTheme: Theme = {
 	type: "LIGHT",

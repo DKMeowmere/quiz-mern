@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/config"
 import { endLoading, startLoading } from "../../app/features/appSlice"
-import { User } from "../../types/user"
+import { UserClient } from "@backend/types/user"
 import { ProfileContainer } from "./styles"
 import { MdLogout } from "react-icons/md"
 import { BiEditAlt } from "react-icons/bi"
@@ -16,7 +16,7 @@ export default function Profile() {
 	const loggedUser = useAppSelector(state => state.app.user)
 	const isAppLoading = useAppSelector(state => state.app.isAppLoading)
 	const { logout } = useLogin()
-	const [user, setUser] = useState<User | null>(null)
+	const [user, setUser] = useState<UserClient | null>(null)
 	const [profileAvatar, setProfileAvatar] = useState(
 		`${import.meta.env.VITE_SERVER_URL}/static/defaultAvatar.jpg`
 	)
@@ -69,9 +69,7 @@ export default function Profile() {
 						className="avatar"
 						data-cy="avatar"
 						onError={() => {
-							setProfileAvatar(
-								`${import.meta.env.VITE_SERVER_URL}/static/defaultAvatar.jpg`
-							)
+							setProfileAvatar("/static/defaultAvatar.jpg")
 						}}
 					/>
 					<h1 data-cy="user-name">{user.name}</h1>

@@ -11,5 +11,11 @@ export const answerSchema = z.object({
 	isTrue: z.boolean(),
 })
 
+export const AnswerClientSchema = answerSchema.extend({
+	_id: z.string(),
+})
+
 export type Answer = z.infer<typeof answerSchema>
 export type Answers = Answer[]
+export type AnswerClient = z.infer<typeof AnswerClientSchema>
+export type AnswersClient = AnswerClient[]

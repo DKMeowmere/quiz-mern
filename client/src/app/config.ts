@@ -1,7 +1,7 @@
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import type { RootState, AppDispatch } from './store'
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux"
+import type { RootState, AppDispatch } from "./store"
 import baseStyled, { ThemedStyledInterface } from "styled-components"
-import { Theme } from "../types/theme"
+import { Theme } from "@backend/types/client/theme"
 
 export const styled = baseStyled as ThemedStyledInterface<Theme>
 export const useAppDispatch: () => AppDispatch = useDispatch

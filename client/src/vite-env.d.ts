@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import { Store } from "./types/state"
+import { Store } from "../../server/types/client/types/state"
 
 declare global {
 	interface Window {

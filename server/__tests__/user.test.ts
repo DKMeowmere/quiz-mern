@@ -406,8 +406,8 @@ describe("USER /api/user", () => {
 				.attach("avatar", "__tests__/fixtures/files/ronaldReagan.jpg")
 
 			token = `Bearer ${body.token}`
-			userId = body.user._id
 
+			userId = body.user._id
 			const quiz = await Quiz.create(quizPayload)
 			quiz.creatorId = body.user._id.toString()
 			await quiz.save()

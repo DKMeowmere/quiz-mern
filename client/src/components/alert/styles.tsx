@@ -1,6 +1,6 @@
 import { css } from "styled-components"
 import { styled } from "../../app/config"
-import { AlertTypes } from "../../types/alert"
+import { AlertTypes } from "@backend/types/client/alert"
 
 function getAlertColor(type: AlertTypes) {
 	switch (type) {

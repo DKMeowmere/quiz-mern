@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { AppState } from "../../types/appState"
+import { AppState } from "@backend/types/client/appState"
 import lightTheme from "../themes/lightTheme"
 import darkTheme from "../themes/darkTheme"
-import { User } from "../../types/user"
+import { UserClient } from "@backend/types/user"
 
 const initialState: AppState = {
 	token: "",
@@ -36,14 +36,14 @@ const appSlice = createSlice({
 		setToken: (state, action: PayloadAction<string>) => {
 			state.token = action.payload
 		},
-		login: (state, action: PayloadAction<User>) => {
+		login: (state, action: PayloadAction<UserClient>) => {
 			state.user = action.payload
 			state.isLoggedIn = true
 		},
 		logout: state => {
 			state.user = null
 			state.isLoggedIn = false
-      state.token = ""
+			state.token = ""
 		},
 	},
 })

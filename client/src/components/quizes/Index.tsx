@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom"
-import { Quiz } from "../../types/quiz"
+import { QuizesClient } from "@backend/types/quiz"
 import { useState } from "react"
 import { QuizesContainer } from "./styles"
 
 type Props = {
-	quizes: Quiz[]
+	quizes: QuizesClient
 }
 
 export default function Quizes({ quizes }: Props) {

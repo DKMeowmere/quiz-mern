@@ -11,7 +11,10 @@ declare namespace Cypress {
 		): Chainable<JQuery<HTMLElement>>
 		serverRequest(url: string): Cypress.Chainable<any>
 		createAccount(
-			user: Omit<import("../../src/types/user").User, "userQuizes" | "_id">
+			user: Omit<
+				import("../../../server/types/client/types/user").User,
+				"userQuizes" | "_id"
+			>
 		): void
 		deleteAccount(): void
 	}

@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../../app/config"
 import { EditAccountContainer, EditAccountForm } from "./styles"
 import { FormEvent, useEffect, useState } from "react"
-import { User } from "../../types/user"
+import { UserClient } from "@backend/types/user"
 import { endLoading, login, startLoading } from "../../app/features/appSlice"
 import { Textarea } from "../../components/textarea/TextArea"
 import { Button } from "../../components/button/Button"
@@ -17,7 +17,7 @@ export default function EditAccount() {
 	const theme = useAppSelector(state => state.app.theme)
 	const token = useAppSelector(state => state.app.token)
 	const dispatch = useAppDispatch()
-	const [user, setUser] = useState<User | null>(null)
+	const [user, setUser] = useState<UserClient | null>(null)
 	const { id } = useParams()
 	const navigate = useNavigate()
 	const [isModalOpen, setIsModalOpen] = useState(false)

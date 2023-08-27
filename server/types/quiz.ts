@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { questionSchema } from "./question.js"
+import { QuestionClientSchema, questionSchema } from "./question.js"
 
 export const quizSchema = z.object({
 	_id: z.string().nullish(),
@@ -11,4 +11,14 @@ export const quizSchema = z.object({
 	creatorId: z.string().catch("unknown"),
 })
 
+export const quizClientSchema = quizSchema.extend({
+	_id: z.string(),
+	questions: z.array(QuestionClientSchema),
+	createdAt: z.date().optional(),
+	updatedAt: z.date().optional(),
+})
+
 export type Quiz = z.infer<typeof quizSchema>
+export type Quizes = Quiz[]
+export type QuizClient = z.infer<typeof quizClientSchema>
+export type QuizesClient = QuizClient[]

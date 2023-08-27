@@ -1,7 +1,7 @@
-import { Quiz } from "./quiz"
+import { QuizClient } from "../quiz"
 
 export type QuizState = {
-	quiz: Quiz | null
+	quiz: QuizClient | null
 	userPoints: number
 	timer: number
 	isGameStarted: boolean

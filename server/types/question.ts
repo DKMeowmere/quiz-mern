@@ -1,4 +1,4 @@
-import { answerSchema } from "./answer.js"
+import { answerSchema, AnswerClientSchema } from "./answer.js"
 import { z } from "zod"
 
 export const questionTypeEnum = ["TEXT", "IMAGE", "AUDIO"] as const
@@ -15,4 +15,15 @@ export const questionSchema = z.object({
 		.max(4, { message: "Pytanie może składać się z maksymalnie 4 odpowiedzi" }),
 })
 
+export const QuestionClientSchema = questionSchema.extend({
+	_id: z.string(),
+	answers: z
+		.array(AnswerClientSchema)
+		.min(2, { message: "Musisz podać przynajmniej 2 odpowiedzi w pytaniu" })
+		.max(4, { message: "Pytanie może składać się z maksymalnie 4 odpowiedzi" }),
+})
+
 export type Question = z.infer<typeof questionSchema>
+export type Questions = Question[]
+export type QuestionClient = z.infer<typeof QuestionClientSchema>
+export type QuestionsClient = QuestionClient[]

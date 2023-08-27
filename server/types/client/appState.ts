@@ -1,5 +1,5 @@
 import { Theme } from "./theme"
-import { User } from "./user"
+import { UserClient } from "../user"
 
 export type AppState = {
 	token: string
@@ -7,5 +7,5 @@ export type AppState = {
 	themeType: "LIGHT" | "DARK"
 	isAppLoading: boolean
 	isLoggedIn: boolean
-	user: User | null
+	user: UserClient | null
 }

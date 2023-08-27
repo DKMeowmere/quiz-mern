@@ -1,10 +1,13 @@
 import { defineConfig } from "cypress"
+import { config } from "dotenv"
+
+config()
 
 export default defineConfig({
 	e2e: {
-		baseUrl: "http://localhost:3000",
+		baseUrl: process.env.VITE_CLIENT_URL,
 	},
 	env: {
-		SERVER_URL: "http://localhost:4000",
+		SERVER_URL: process.env.VITE_SERVER_URL,
 	},
 })
