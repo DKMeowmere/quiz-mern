@@ -6,7 +6,7 @@ import fs from "fs/promises"
 import path from "path"
 import mongoose from "mongoose"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import { filesValidationFailed } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
 import { userNotFound } from "../../utils/errors/user.js"
 import {
 	invalidQuizId,
@@ -18,7 +18,7 @@ import {
 export async function updateQuiz(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailed)
+			throw new CustomError(filesValidationFailedMustBeImageOrAudio)
 		}
 
 		if (!req.user) {
@@ -26,7 +26,7 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 		}
 
 		const { id } = req.params
-		const { title } = req.body
+		const { title, description } = req.body
 
 		if (!title) {
 			throw new CustomError(noQuizTitle)
@@ -59,10 +59,11 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 			id,
 			{
 				title,
+				description,
 			},
 			{ new: true }
 		)
-    
+
 		res.json(updatedQuiz)
 	} catch (err) {
 		await handleControllerError(req, res, err)

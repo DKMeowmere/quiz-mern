@@ -8,6 +8,10 @@ export const quizSchema = new mongoose.Schema<QuizType>(
 			type: String,
 			required: true,
 		},
+		description: {
+			type: String,
+			default: "",
+		},
 		fileLocation: {
 			type: String,
 		},

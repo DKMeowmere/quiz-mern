@@ -4,11 +4,15 @@ import { useEffect } from "react"
 
 type Props = {
 	children: any
-	setIsModalOpen: (isModalOpen: boolean) => void
+	closeCallback: (...args: any[]) => void
 	className?: string
 }
 
-export default function Modal({ children, setIsModalOpen, className }: Props) {
+export default function Modal({
+	children,
+	closeCallback,
+	className,
+}: Props) {
 	useEffect(() => {
 		document.body.style.overflow = "hidden"
 		return () => {
@@ -18,7 +22,7 @@ export default function Modal({ children, setIsModalOpen, className }: Props) {
 
 	return (
 		<ModalContainer className={className}>
-			<RiCloseCircleFill onClick={() => setIsModalOpen(false)} />
+			<RiCloseCircleFill className="close-btn" onClick={closeCallback} />
 			<div className="content">{children}</div>
 		</ModalContainer>
 	)

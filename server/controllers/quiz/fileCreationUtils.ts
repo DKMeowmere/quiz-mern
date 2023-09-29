@@ -1,13 +1,13 @@
-import { CustomRequest } from "../../types/customRequest.js"
-import { Quiz as QuizType } from "../../types/quiz.js"
-import CustomError from "../../types/customError.js"
-import { removeFile } from "../../utils/removeFile.js"
 import fs from "fs/promises"
 import path from "path"
 import { HydratedDocument } from "mongoose"
-import { invalidFileName } from "../../utils/errors/universal.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { Quiz as QuizType } from "../../types/quiz.js"
+import CustomError from "../../types/customError.js"
 import { Question } from "../../types/question.js"
 import { Answer } from "../../types/answer.js"
+import { removeFile } from "../../utils/removeFile.js"
+import { invalidFileName } from "../../utils/errors/universal.js"
 
 export async function createMainQuizFile(
 	req: CustomRequest,
@@ -19,7 +19,7 @@ export async function createMainQuizFile(
 	})
 
 	if (fileIndex === -1) {
-		quiz.fileLocation = "/static/uploads/defaultQuiz.jpg"
+		quiz.fileLocation = "/static/defaultQuiz.jpg"
 		return
 	}
 
@@ -29,9 +29,16 @@ export async function createMainQuizFile(
 	if (!fileName) {
 		throw new CustomError(invalidFileName)
 	}
-	const fileObj = path.parse(fileName)
+	const { ext } = path.parse(fileName)
 
-	const newFileName = `${quiz._id}${fileObj.ext}`
+	const possibleExtensions = new Set([".jpg", ".png", ".jpeg"])
+
+	if (!possibleExtensions.has(ext)) {
+		quiz.fileLocation = "/static/uploads/defaultQuiz.jpg"
+		return
+	}
+
+	const newFileName = `${quiz._id}${ext}`
 
 	const absolutePathToFile = path.resolve(
 		`./static/uploads/quiz/${newFileName}`
@@ -50,7 +57,7 @@ export async function createQuestionFile(
 	const possibleQuestionFileTypes = new Set(["IMAGE", "AUDIO"])
 
 	if (!possibleQuestionFileTypes.has(question.type)) {
-    question.type = "TEXT"
+		question.type = "TEXT"
 		question.fileLocation = null
 		return
 	}

@@ -30,17 +30,12 @@ export const noUsers: CustomErrorType = {
 	statusCode: 404,
 }
 
-export const emailMissing: CustomErrorType = {
-	message: "Musisz podać email",
+export const loginFailed: CustomErrorType = {
+	message: "Logowanie nie powiodło się",
 	statusCode: 400,
 }
 
-export const passwordMissing: CustomErrorType = {
-	message: "Musisz podać hasło",
-	statusCode: 400,
-}
-
-export const invalidPassword: CustomErrorType = {
-	message: "Nie poprawne hasło",
+export const accountCreationFailed: CustomErrorType = {
+	message: "Logowanie nie powiodło się",
 	statusCode: 400,
 }

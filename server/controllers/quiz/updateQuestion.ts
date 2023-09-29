@@ -9,7 +9,7 @@ import mongoose from "mongoose"
 import { handleControllerError } from "../../utils/handleControllerError.js"
 import { questionTypeSet } from "../../types/question.js"
 import { userNotFound } from "../../utils/errors/user.js"
-import { filesValidationFailed } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
 import {
 	invalidQuestionId,
 	invalidQuizId,
@@ -23,7 +23,7 @@ import {
 export async function updateQuestion(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailed)
+			throw new CustomError(filesValidationFailedMustBeImageOrAudio)
 		}
 
 		if (!req.user) {

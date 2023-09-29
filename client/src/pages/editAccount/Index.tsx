@@ -1,15 +1,16 @@
-import { useNavigate, useParams } from "react-router-dom"
-import { useAppDispatch, useAppSelector } from "../../app/config"
-import { EditAccountContainer, EditAccountForm } from "./styles"
 import { FormEvent, useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import { UserClient } from "@backend/types/user"
+import { useAppDispatch, useAppSelector } from "../../app/config"
 import { endLoading, login, startLoading } from "../../app/features/appSlice"
+import { enqueueAlert } from "../../app/features/alertSlice"
+import { useUtils } from "../../hooks/useUtils"
+import useLogin from "../../hooks/useLogin"
 import { Textarea } from "../../components/textarea/TextArea"
 import { Button } from "../../components/button/Button"
-import useUtils from "../../hooks/useUtils"
-import { enqueueAlert } from "../../app/features/alertSlice"
 import Modal from "../../components/modal/Index"
-import useLogin from "../../hooks/useLogin"
+import FileInput from "../../components/fileInput/Index"
+import { EditAccountContainer, EditAccountForm } from "./styles"
 
 export default function EditAccount() {
 	const isAppLoading = useAppSelector(state => state.app.isAppLoading)
@@ -171,16 +172,11 @@ export default function EditAccount() {
 						/>
 					</div>
 					<div className="input-container">
-						<p>Dodaj zdjęcie profilowe</p>
-						<label htmlFor="avatar-upload" className="avatar-upload-label">
-							Wstaw zdjęcie profilowe
-						</label>
-						<input
+						<FileInput
+							dataCy="avatar-upload"
 							id="avatar-upload"
-							data-cy="avatar-upload"
+							text="Dodaj zdjęcie profilowe"
 							width="100%"
-							height="200px"
-							type="file"
 							onChange={e => {
 								if (e.target.files) {
 									setAvatar(e.target.files[0])
@@ -225,7 +221,7 @@ export default function EditAccount() {
 				</EditAccountForm>
 			)}
 			{isModalOpen && (
-				<Modal setIsModalOpen={setIsModalOpen} className="modal">
+				<Modal closeCallback={() => setIsModalOpen(false)} className="modal">
 					<p>Na pewno? Ta akcja jest nieodwracalna</p>
 					<Button
 						bgColor={theme.colors.errorMain}

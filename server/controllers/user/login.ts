@@ -1,19 +1,14 @@
+import { Response } from "express"
+import jwt, { JwtPayload } from "jsonwebtoken"
 import { CustomRequest } from "../../types/customRequest.js"
-import User from "../../models/user.js"
+import bcrypt from "bcrypt"
 import CustomError from "../../types/customError.js"
 import env from "../../config/envVariables.js"
-import { Response } from "express"
-import bcrypt from "bcrypt"
+import User from "../../models/user.js"
+import Quiz from "../../models/quiz.js"
 import { createToken } from "../../utils/createToken.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import Quiz from "../../models/quiz.js"
-import jwt, { JwtPayload } from "jsonwebtoken"
-import {
-	emailMissing,
-	invalidPassword,
-	passwordMissing,
-	userNotFound,
-} from "../../utils/errors/user.js"
+import { loginFailed, userNotFound } from "../../utils/errors/user.js"
 
 export async function login(req: CustomRequest, res: Response) {
 	try {
@@ -34,7 +29,7 @@ export async function login(req: CustomRequest, res: Response) {
 
 			const userQuizes = await Quiz.find({ creatorId: user._id })
 			user.userQuizes = userQuizes
-      user.password = ""
+			user.password = ""
 
 			res.json({
 				user,
@@ -44,11 +39,11 @@ export async function login(req: CustomRequest, res: Response) {
 		}
 
 		if (!email) {
-			throw new CustomError(emailMissing)
+			throw new CustomError(loginFailed)
 		}
 
-		if (!passwordMissing) {
-			throw new CustomError(passwordMissing)
+		if (!loginFailed) {
+			throw new CustomError(loginFailed)
 		}
 
 		const user = await User.findOne({ email })
@@ -66,7 +61,7 @@ export async function login(req: CustomRequest, res: Response) {
 		)
 
 		if (!isProvidedPasswordCorrect) {
-			throw new CustomError(invalidPassword)
+			throw new CustomError(loginFailed)
 		}
 		const token = createToken(user)
 

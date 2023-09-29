@@ -1,20 +1,21 @@
 import { FormEvent, useEffect, useState } from "react"
-import { useAppSelector } from "../../app/config"
-import Container from "../../components/container/Index"
 import { useNavigate } from "react-router-dom"
-import { RegisterForm } from "./styles"
+import { useAppSelector } from "../../app/config"
+import useSignUp from "../../hooks/useSignUp"
+import Container from "../../components/container/Index"
 import { Textarea } from "../../components/textarea/TextArea"
 import { Button } from "../../components/button/Button"
-import useSignUp from "../../hooks/useSignUp"
 import PasswordInput from "../../components/passwordInput/Index"
+import FileInput from "../../components/fileInput/Index"
+import { RegisterForm } from "./styles"
 
 export default function CreateAccount() {
 	const isLoggedIn = useAppSelector(state => state.app.isLoggedIn)
 	const theme = useAppSelector(state => state.app.theme)
 	const navigate = useNavigate()
-	const [name, setName] = useState("")
-	const [email, setEmail] = useState("")
-	const [password, setPassword] = useState("")
+	const [name, setName] = useState("Ronald Reagan")
+	const [email, setEmail] = useState("ronaldreagan@usa.com")
+	const [password, setPassword] = useState("admin123")
 	const [biography, setBiography] = useState("")
 	const [avatar, setAvatar] = useState<File | null>(null)
 	const [preview, setPreview] = useState("")
@@ -84,12 +85,11 @@ export default function CreateAccount() {
 					/>
 				</div>
 				<div className="input-container">
-					<p>Dodaj zdjęcie profilowe</p>
-					<input
+					<FileInput
 						width="100%"
-						height="200px"
-						type="file"
-						data-cy="avatar-input"
+						text="Dodaj zdjęcie profilowe"
+						dataCy="avatar-input"
+						id="avatar-input"
 						onChange={e => {
 							if (e.target.files) {
 								setAvatar(e.target.files[0])

@@ -1,4 +1,5 @@
 import { useCookies } from "react-cookie"
+import { useNavigate } from "react-router-dom"
 import { useAppDispatch } from "../app/config"
 import { enqueueAlert } from "../app/features/alertSlice"
 import {
@@ -7,8 +8,7 @@ import {
 	setToken,
 	startLoading,
 } from "../app/features/appSlice"
-import { useNavigate } from "react-router-dom"
-import useUtils from "./useUtils"
+import { useUtils } from "./useUtils"
 
 type SignUpProps = {
 	name: string
@@ -73,7 +73,7 @@ export default function useSignUp() {
 			)
 			dispatch(setToken(token))
 			dispatch(login(user))
-			setCookies("token", token)
+			setCookies("token", token, { path: "/" })
 			dispatch(endLoading())
 
 			navigate("/")

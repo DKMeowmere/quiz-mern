@@ -1,14 +1,15 @@
 import { Link, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { useAppDispatch, useAppSelector } from "../../app/config"
-import { endLoading, startLoading } from "../../app/features/appSlice"
-import { UserClient } from "@backend/types/user"
-import { ProfileContainer } from "./styles"
 import { MdLogout } from "react-icons/md"
 import { BiEditAlt } from "react-icons/bi"
+import { UserClient } from "@backend/types/user"
+import { useAppDispatch, useAppSelector } from "../../app/config"
+import { endLoading, startLoading } from "../../app/features/appSlice"
+import { DEFAULT_AVATAR_IMAGE_URL } from "../../app/constants"
 import useLogin from "../../hooks/useLogin"
+import { useUtils } from "../../hooks/useUtils"
+import { ProfileContainer } from "./styles"
 import Quizes from "../../components/quizes/Index"
-import useUtils from "../../hooks/useUtils"
 
 export default function Profile() {
 	const { id } = useParams()
@@ -20,7 +21,7 @@ export default function Profile() {
 	const [profileAvatar, setProfileAvatar] = useState(
 		`${import.meta.env.VITE_SERVER_URL}/static/defaultAvatar.jpg`
 	)
-	const { handleErrorWithAlert } = useUtils()
+	const { handleErrorWithAlert, validateFileUrl } = useUtils()
 
 	useEffect(() => {
 		async function getUser() {
@@ -64,12 +65,12 @@ export default function Profile() {
 					)}
 
 					<img
-						src={`${import.meta.env.VITE_SERVER_URL}${profileAvatar}`}
+						src={validateFileUrl(profileAvatar)}
 						alt="zdjęcie profilowe"
 						className="avatar"
 						data-cy="avatar"
 						onError={() => {
-							setProfileAvatar("/static/defaultAvatar.jpg")
+							setProfileAvatar(DEFAULT_AVATAR_IMAGE_URL)
 						}}
 					/>
 					<h1 data-cy="user-name">{user.name}</h1>

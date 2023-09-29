@@ -2,7 +2,7 @@ import { Response } from "express"
 import { CustomRequest } from "../../types/customRequest"
 import { handleControllerError } from "../../utils/handleControllerError.js"
 import CustomError from "../../types/customError.js"
-import { filesValidationFailed } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
 import { answerSchema } from "../../types/answer.js"
 import Quiz from "../../models/quiz.js"
 import {
@@ -20,7 +20,7 @@ import mongoose from "mongoose"
 export async function createAnswer(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailed)
+			throw new CustomError(filesValidationFailedMustBeImageOrAudio)
 		}
 
 		const { quizId, questionId } = req.params

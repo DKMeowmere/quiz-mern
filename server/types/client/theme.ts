@@ -18,10 +18,14 @@ export type Theme = {
 	}
 	colors: {
 		text: string
+		contrastText: string
+		whiteText: string
+		blackText: string
 		main: string
 		lightMainBg: string
 		mainBg: string
 		darkMainBg: string
+		contrastMainBg: string
 		errorMain: string
 		errorSecondary: string
 		warningMain: string

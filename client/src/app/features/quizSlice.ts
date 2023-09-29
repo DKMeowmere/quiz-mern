@@ -1,17 +1,21 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { QuizState } from "@backend/types/client/quizState"
+import { QuizGameState } from "@backend/types/client/quizState"
 import { QuizClient } from "@backend/types/quiz"
 import { AnswerClient } from "@backend/types/answer"
-import {  QuestionClient } from "@backend/types/question"
+import { QuestionClient } from "@backend/types/question"
 
-const initialState: QuizState = {
+const initialState: QuizGameState = {
 	quiz: null,
 	timer: 0,
 	userPoints: 0,
 	isGameStarted: false,
+	form: {
+		isQuestionModalOpen: false,
+		modalQuestionId: "",
+	},
 }
 
-const quizSlice = createSlice({
+const quizGameSlice = createSlice({
 	initialState,
 	name: "quiz",
 	reducers: {
@@ -29,10 +33,12 @@ const quizSlice = createSlice({
 				creatorId,
 				questions: [],
 				title: "",
+				description: "",
 				fileLocation: undefined,
+				originalFileName: undefined,
 			}
 		},
-		setQuiz: (state, action: PayloadAction<QuizClient>) => {
+		setQuiz: (state, action: PayloadAction<QuizClient | null>) => {
 			const quiz = action.payload
 
 			state.quiz = quiz
@@ -63,9 +69,7 @@ const quizSlice = createSlice({
 			if (!state.quiz) {
 				throw new Error("Quiz is null")
 			}
-
 			const question = action.payload
-
 			const questionIndex = state.quiz.questions.findIndex(
 				({ _id }) => question._id === _id
 			)
@@ -112,7 +116,6 @@ const quizSlice = createSlice({
 			state,
 			action: PayloadAction<{
 				questionId: string
-				answerId: string
 				answer: AnswerClient
 			}>
 		) => {
@@ -121,7 +124,7 @@ const quizSlice = createSlice({
 			}
 
 			const questionId = action.payload.questionId
-			const answerId = action.payload.answerId
+			const answerId = action.payload.answer._id
 			const answer = action.payload.answer
 
 			const questionIndex = state.quiz.questions.findIndex(
@@ -163,6 +166,14 @@ const quizSlice = createSlice({
 		tick: state => {
 			state.timer++
 		},
+		openModal: (state, action: PayloadAction<QuestionClient>) => {
+			const question = action.payload
+			state.form.isQuestionModalOpen = true
+			state.form.modalQuestionId = question._id
+		},
+		closeModal: state => {
+			state.form.isQuestionModalOpen = false
+		},
 	},
 })
 
@@ -180,5 +191,7 @@ export const {
 	addQuestion,
 	editQuestion,
 	initQuiz,
-} = quizSlice.actions
-export default quizSlice.reducer
+	openModal,
+	closeModal,
+} = quizGameSlice.actions
+export default quizGameSlice.reducer

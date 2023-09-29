@@ -114,6 +114,7 @@ describe("QUIZ /api/quiz", () => {
 					.set("content-type", "multipart/form-data")
 					.set("Authorization", token)
 					.field("title", quizPayload.title)
+					.field("description", quizPayload.description)
 					.field("questions", JSON.stringify(quizPayload.questions))
 					.field("fileLocation", "rsFlag.png")
 					.attach("files", "__tests__/fixtures/files/rsFlag.png")
@@ -124,6 +125,25 @@ describe("QUIZ /api/quiz", () => {
 				expect(body.creatorId).toBe(userPayload._id)
 				const absolutePath = `./static/uploads/quiz/${body._id}.png`
 				expect(doFileExists(path.resolve(absolutePath))).toBeTruthy()
+			})
+		})
+		describe("given the quiz payload with file with forbidden extension", () => {
+			it("should return 201 and set main file location to quizDefault.jpg", async () => {
+				const quiz = structuredClone(quizPayload)
+
+				const { statusCode, body } = await request(app)
+					.post("/api/quiz")
+					.set("content-type", "multipart/form-data")
+					.set("Authorization", token)
+					.field("title", quiz.title)
+					.field("questions", JSON.stringify(quiz.questions))
+					.field("fileLocation", "windowsShutdown.mp3")
+					.attach("files", "__tests__/fixtures/files/windowsShutdown.mp3")
+
+				const { success } = quizSchema.safeParse(body)
+				expect(statusCode).toBe(201)
+				expect(body.fileLocation).toContain("defaultQuiz.jpg")
+				expect(success).toBeTruthy()
 			})
 		})
 		describe("given the quiz payload with question and answer file", () => {
@@ -377,13 +397,14 @@ describe("QUIZ /api/quiz", () => {
 					.set("Authorization", token)
 					.set("content-type", "multipart/form-data")
 					.field("title", "UPDATED TITLE")
+					.field("description", "UPDATED DESCRIPTION")
 					.attach("file", "__tests__/fixtures/files/hercegBosna.png")
 
 				const { success } = quizSchema.safeParse(body)
-
 				expect(statusCode).toBe(200)
 				expect(success).toBeTruthy()
 				expect(body.title).toBe("UPDATED TITLE")
+				expect(body.description).toBe("UPDATED DESCRIPTION")
 				expect(
 					await doFileExists(path.resolve(`.${body.fileLocation}`))
 				).toBeTruthy()

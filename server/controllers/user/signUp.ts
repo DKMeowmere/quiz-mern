@@ -9,12 +9,12 @@ import bcrypt from "bcrypt"
 import { createToken } from "../../utils/createToken.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
 import { Response } from "express"
-import { filesValidationFailed } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
 
 export async function signUp(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailed)
+			throw new CustomError(filesValidationFailedMustBeImageOrAudio)
 		}
 
 		const { name, email, biography, password } = req.body

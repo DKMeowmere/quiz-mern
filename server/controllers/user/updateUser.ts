@@ -8,7 +8,7 @@ import path from "path"
 import { handleControllerError } from "../../utils/handleControllerError.js"
 import { removeFile } from "../../utils/removeFile.js"
 import Quiz from "../../models/quiz.js"
-import { filesValidationFailed } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImage } from "../../utils/errors/universal.js"
 import {
 	authNeeded,
 	invalidUserId,
@@ -19,7 +19,7 @@ import {
 export async function updateUser(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailed)
+			throw new CustomError(filesValidationFailedMustBeImage)
 		}
 
 		if (!req.user) {

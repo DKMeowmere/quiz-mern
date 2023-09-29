@@ -22,6 +22,7 @@ export const QuizesContainer = styled.div`
 			border-radius: 20px 0 0 20px;
 			width: 120px;
 			height: 100%;
+			object-fit: cover;
 		}
 		.right-container {
 			margin-left: 10px;

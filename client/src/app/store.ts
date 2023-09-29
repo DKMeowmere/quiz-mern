@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit"
 import appSlice from "./features/appSlice"
 import alertSlice from "./features/alertSlice"
+import quizGameSlice from "./features/quizSlice"
 
 const store = configureStore({
 	reducer: {
 		app: appSlice,
 		alert: alertSlice,
+		quizGame: quizGameSlice,
 	},
 })
 

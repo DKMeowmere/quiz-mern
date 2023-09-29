@@ -44,6 +44,7 @@ const appSlice = createSlice({
 			state.user = null
 			state.isLoggedIn = false
 			state.token = ""
+      localStorage.removeItem("user")
 		},
 	},
 })

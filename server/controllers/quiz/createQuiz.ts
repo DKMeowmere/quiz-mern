@@ -10,7 +10,7 @@ import {
 	createMainQuizFile,
 	createQuestionFile,
 } from "./fileCreationUtils.js"
-import { filesValidationFailed } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
 import { userNotFound } from "../../utils/errors/user.js"
 import { questionHasNotTrueAnswer } from "../../utils/errors/quiz.js"
 import { removeUnusedFiles } from "../../utils/removeUnusedFiles.js"
@@ -18,18 +18,19 @@ import { removeUnusedFiles } from "../../utils/removeUnusedFiles.js"
 export async function createQuiz(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailed)
+			throw new CustomError(filesValidationFailedMustBeImageOrAudio)
 		}
 
 		if (!req.user) {
 			throw new CustomError(userNotFound)
 		}
 
-		const { title, questions, fileLocation } = req.body
+		const { title, questions, fileLocation, description } = req.body
 		const result = quizSchema.safeParse({
 			title,
 			questions: JSON.parse(questions),
 			fileLocation,
+			description,
 		})
 
 		if (result.success === false) {

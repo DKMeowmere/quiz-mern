@@ -3,7 +3,10 @@ import { QuestionClientSchema, questionSchema } from "./question.js"
 
 export const quizSchema = z.object({
 	_id: z.string().nullish(),
-	title: z.string(),
+	title: z
+		.string()
+		.min(4, { message: "Tytuł musi składać się minimum z 4 znaków" }),
+	description: z.string().default("").catch(""),
 	fileLocation: z.string().nullish().catch(undefined),
 	questions: z
 		.array(questionSchema)
@@ -13,9 +16,12 @@ export const quizSchema = z.object({
 
 export const quizClientSchema = quizSchema.extend({
 	_id: z.string(),
-	questions: z.array(QuestionClientSchema),
-	createdAt: z.date().optional(),
-	updatedAt: z.date().optional(),
+	originalFileName: z.string().optional().catch(undefined),
+	questions: z
+		.array(QuestionClientSchema)
+		.min(1, { message: "Musisz podać przynajmniej jedno pytanie" }),
+	createdAt: z.date().or(z.string()).optional(),
+	updatedAt: z.date().or(z.string()).optional(),
 })
 
 export type Quiz = z.infer<typeof quizSchema>

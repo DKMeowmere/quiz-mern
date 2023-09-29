@@ -1,6 +1,6 @@
-import { useAppDispatch } from "../app/config"
 import { useNavigate } from "react-router-dom"
 import { useCookies } from "react-cookie"
+import { useAppDispatch } from "../app/config"
 import { enqueueAlert } from "../app/features/alertSlice"
 import {
 	endLoading,
@@ -9,7 +9,7 @@ import {
 	startLoading,
 	logout as logoutAction,
 } from "../app/features/appSlice"
-import useUtils from "./useUtils"
+import { useUtils } from "./useUtils"
 
 export default function useLogin() {
 	const dispatch = useAppDispatch()
@@ -56,7 +56,7 @@ export default function useLogin() {
 			)
 			dispatch(setToken(token))
 			dispatch(login(user))
-			setCookies("token", token)
+			setCookies("token", token, { path: "/" })
 
 			navigate("/")
 		} catch (err: unknown) {
@@ -87,16 +87,16 @@ export default function useLogin() {
 
 			dispatch(setToken(token))
 			dispatch(login(user))
-			setCookies("token", token)
+			setCookies("token", token, { path: "/" })
 		} catch (err: unknown) {
-      handleError()
-			setCookies("token", null)
+			handleError()
+			setCookies("token", null, { path: "/" })
 		}
 	}
 
 	function logout() {
 		dispatch(logoutAction())
-		setCookies("token", null)
+		setCookies("token", null, { path: "/" })
 	}
 
 	return { loginWithEmail, loginWithToken, logout }

@@ -1,19 +1,22 @@
 import { Routes, Route } from "react-router-dom"
-import Home from "./pages/home/Index"
+import { useCookies } from "react-cookie"
+import { useEffect } from "react"
+import { useAppDispatch, useAppSelector } from "./app/config"
+import store from "./app/store"
+import { setTheme, setToken } from "./app/features/appSlice"
+import GlobalStyle from "./app/globalStyle"
+import useLogin from "./hooks/useLogin"
 import Alerts from "./components/alert/Index"
 import Navbar from "./components/navbar/Index"
-import GlobalStyle from "./app/globalStyle"
-import { useAppDispatch, useAppSelector } from "./app/config"
 import LoadingScreen from "./components/loadingScreen/Index"
 import Login from "./pages/login/Index"
-import { useCookies } from "react-cookie"
-import useLogin from "./hooks/useLogin"
-import { useEffect } from "react"
-import { setTheme, setToken } from "./app/features/appSlice"
+import Home from "./pages/home/Index"
 import Profile from "./pages/profile/Index"
-import store from "./app/store"
 import CreateAccount from "./pages/createAccount/Index"
 import EditAccount from "./pages/editAccount/Index"
+import { CreateQuiz } from "./pages/quiz/CreateQuiz"
+import NotFound from "./pages/notFoundPage/Index"
+import ErrorBoundary from "./pages/error/Index"
 
 function App() {
 	const theme = useAppSelector(state => state.app.theme)
@@ -31,6 +34,7 @@ function App() {
 		if (cookies.token) {
 			login()
 		}
+
 		if (localStorage.getItem("theme")) {
 			dispatch(setTheme(localStorage.getItem("theme") || "LIGHT"))
 		}
@@ -41,7 +45,7 @@ function App() {
 	}
 
 	return (
-		<>
+		<ErrorBoundary>
 			<GlobalStyle bgColor={theme.colors.mainBg} />
 			{isAppLoading && <LoadingScreen />}
 			<Navbar />
@@ -52,8 +56,10 @@ function App() {
 				<Route path="/user/create" element={<CreateAccount />} />
 				<Route path="/user/:id/edit" element={<EditAccount />} />
 				<Route path="/user/:id" element={<Profile />} />
+				<Route path="/quiz/create" element={<CreateQuiz />} />
+				<Route path="*" element={<NotFound />} />
 			</Routes>
-		</>
+		</ErrorBoundary>
 	)
 }
 

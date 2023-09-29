@@ -5,9 +5,15 @@ export const universalError: CustomErrorType = {
 	statusCode: 400,
 }
 
-export const filesValidationFailed: CustomErrorType = {
+export const filesValidationFailedMustBeImageOrAudio: CustomErrorType = {
 	message:
 		"Plik nie może zawierać '/' oraz musi posiadać rozszerzenie .jpg  .jpeg, .png lub .mp3",
+	statusCode: 400,
+}
+
+export const filesValidationFailedMustBeImage: CustomErrorType = {
+	message:
+		"Plik nie może zawierać '/' oraz musi posiadać rozszerzenie .jpg  .jpeg lub .png",
 	statusCode: 400,
 }
 

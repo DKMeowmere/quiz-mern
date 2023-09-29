@@ -13,14 +13,14 @@ import {
 	quizUpdateForbidden,
 } from "../../utils/errors/quiz.js"
 import { userNotFound } from "../../utils/errors/user.js"
-import { filesValidationFailed } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
 import { createAnswerFile, createQuestionFile } from "./fileCreationUtils.js"
 import { removeUnusedFiles } from "../../utils/removeUnusedFiles.js"
 
 export async function createQuestion(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailed)
+			throw new CustomError(filesValidationFailedMustBeImageOrAudio)
 		}
 
 		if (!req.user) {
