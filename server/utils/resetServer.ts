@@ -1,14 +1,11 @@
-import User from "../models/user.js"
-import Quiz from "../models/quiz.js"
-import { CustomRequest } from "../types/customRequest.js"
 import { Response } from "express"
 import fs from "fs/promises"
+import { CustomRequest } from "../types/customRequest.js"
+import { User } from "../models/user.js"
+import { Quiz } from "../models/quiz.js"
 import { removeFile } from "./removeFile.js"
 
-export default async function resetServerAndDb(
-	req: CustomRequest,
-	res: Response
-) {
+export async function resetServerAndDb(req: CustomRequest, res: Response) {
 	await User.deleteMany({})
 	await Quiz.deleteMany({})
 

@@ -1,15 +1,11 @@
-import { CustomRequest } from "../../types/customRequest.js"
 import { Response } from "express"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
-import { removeFile } from "../../utils/removeFile.js"
 import fs from "fs/promises"
 import path from "path"
 import mongoose from "mongoose"
-import { handleControllerError } from "../../utils/handleControllerError.js"
-import hasTrueAnswer from "../../utils/quiz/hasTrueAnswer.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
 import { answerTypeSet } from "../../types/answer.js"
-import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
 import {
 	answerNotFound,
 	invalidAnswerId,
@@ -22,8 +18,12 @@ import {
 	quizNotFound,
 	quizUpdateForbidden,
 	wrongAnswerType,
-} from "../../utils/errors/quiz.js"
-import { userNotFound } from "../../utils/errors/user.js"
+} from "../../config/constants/quizErrors.js"
+import { userNotFound } from "../../config/constants/userErrors.js"
+import { Quiz } from "../../models/quiz.js"
+import { removeFile } from "../../utils/removeFile.js"
+import { handleControllerError } from "../../utils/handleControllerError.js"
+import { hasTrueAnswer } from "../../utils/quiz/hasTrueAnswer.js"
 
 export async function updateAnswer(req: CustomRequest, res: Response) {
 	try {

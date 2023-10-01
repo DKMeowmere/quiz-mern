@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useAppDispatch } from "../../app/config"
 import { enqueueAlert } from "../../app/features/alertSlice"
 
-export default function useAudio() {
+export function useAudio() {
 	const [audio, setAudio] = useState<HTMLAudioElement>()
 	const [isAudioPlaying, setIsAudioPlaying] = useState(false)
 	const dispatch = useAppDispatch()

@@ -1,6 +1,6 @@
-import { Form } from "../../components/form/Form"
 import { styled } from "../../app/config"
-import Container from "../../components/container/Index"
+import { Form } from "../../components/form/Form"
+import { Container } from "../../components/container/Index"
 
 export const EditAccountContainer = styled(Container)`
 	text-align: center;

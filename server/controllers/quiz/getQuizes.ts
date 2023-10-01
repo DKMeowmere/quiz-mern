@@ -1,9 +1,9 @@
-import { CustomRequest } from "../../types/customRequest.js"
 import { Response } from "express"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
+import { quizNotFound } from "../../config/constants/quizErrors.js"
+import { Quiz } from "../../models/quiz.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import { quizNotFound } from "../../utils/errors/quiz.js"
 
 export async function getQuizes(req: CustomRequest, res: Response) {
 	try {

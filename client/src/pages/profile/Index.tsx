@@ -6,12 +6,12 @@ import { UserClient } from "@backend/types/user"
 import { useAppDispatch, useAppSelector } from "../../app/config"
 import { endLoading, startLoading } from "../../app/features/appSlice"
 import { DEFAULT_AVATAR_IMAGE_URL } from "../../app/constants"
-import useLogin from "../../hooks/useLogin"
+import { useLogin } from "../../hooks/useLogin"
 import { useUtils } from "../../hooks/useUtils"
+import { Quizes } from "../../components/quizes/Index"
 import { ProfileContainer } from "./styles"
-import Quizes from "../../components/quizes/Index"
 
-export default function Profile() {
+export function Profile() {
 	const { id } = useParams()
 	const dispatch = useAppDispatch()
 	const loggedUser = useAppSelector(state => state.app.user)

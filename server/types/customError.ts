@@ -3,7 +3,7 @@ export type CustomErrorType = {
 	statusCode: number
 }
 
-class CustomError extends Error {
+export class CustomError extends Error {
 	statusCode: number
 	constructor({ message, statusCode }: CustomErrorType) {
 		super(message)
@@ -13,4 +13,3 @@ class CustomError extends Error {
 }
 
 CustomError.prototype.name = "CustomError"
-export default CustomError

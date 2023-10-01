@@ -1,14 +1,14 @@
 import { Response } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken"
-import { CustomRequest } from "../../types/customRequest.js"
 import bcrypt from "bcrypt"
-import CustomError from "../../types/customError.js"
-import env from "../../config/envVariables.js"
-import User from "../../models/user.js"
-import Quiz from "../../models/quiz.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
+import { env } from "../../config/envVariables.js"
+import { loginFailed, userNotFound } from "../../config/constants/userErrors.js"
+import { User } from "../../models/user.js"
+import { Quiz } from "../../models/quiz.js"
 import { createToken } from "../../utils/createToken.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import { loginFailed, userNotFound } from "../../utils/errors/user.js"
 
 export async function login(req: CustomRequest, res: Response) {
 	try {

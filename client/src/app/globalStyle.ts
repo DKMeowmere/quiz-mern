@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components"
 
-const GlobalStyle = createGlobalStyle<{ bgColor: string }>`
+export const GlobalStyle = createGlobalStyle<{ bgColor: string }>`
 	*,
 	*::after,
 	*::before {
@@ -34,4 +34,3 @@ const GlobalStyle = createGlobalStyle<{ bgColor: string }>`
 	}
 `
 
-export default GlobalStyle

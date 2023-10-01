@@ -27,5 +27,4 @@ export const quizSchema = new mongoose.Schema<QuizType>(
 	{ timestamps: true }
 )
 
-const Quiz = mongoose.model<QuizType>("quiz", quizSchema)
-export default Quiz
+export const Quiz = mongoose.model<QuizType>("quiz", quizSchema)

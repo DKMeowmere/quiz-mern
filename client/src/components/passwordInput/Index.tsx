@@ -1,6 +1,6 @@
-import { InputContainer } from "./styles"
 import { useState } from "react"
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"
+import { InputContainer } from "./styles"
 
 type Props = {
 	width: string
@@ -12,7 +12,7 @@ type Props = {
 	dataCy?: string
 }
 
-export default function PasswordInput({
+export function PasswordInput({
 	width,
 	height,
 	value,

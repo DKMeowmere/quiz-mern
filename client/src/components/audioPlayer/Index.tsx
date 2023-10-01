@@ -1,6 +1,6 @@
 import { AiFillPlayCircle, AiOutlinePause } from "react-icons/ai"
+import { useAudio } from "./useAudio"
 import { PlayerContainer } from "./styles"
-import useAudio from "./useAudio"
 
 type Props = {
 	url: string | null

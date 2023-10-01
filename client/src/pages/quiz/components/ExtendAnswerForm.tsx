@@ -7,7 +7,7 @@ import { useAnswer } from "../hooks/useAnswer"
 import { useUtils } from "../../../hooks/useUtils"
 import { useFiles } from "../hooks/useFiles"
 import { AudioPlayer } from "../../../components/audioPlayer/Index"
-import FileInput from "../../../components/fileInput/Index"
+import { FileInput } from "../../../components/fileInput/Index"
 
 type Props = {
 	questionId: string

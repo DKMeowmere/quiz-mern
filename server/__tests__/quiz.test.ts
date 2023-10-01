@@ -1,15 +1,7 @@
 import { MongoMemoryServer } from "mongodb-memory-server"
 import mongoose from "mongoose"
 import request from "supertest"
-import createServer from "../utils/createServer"
-import { quizPayload } from "./fixtures/quiz"
-import { userPayload } from "./fixtures/user"
-import Quiz from "../models/quiz"
-import { Quiz as QuizType, quizSchema } from "../types/quiz"
 import path from "path"
-import { doFileExists } from "../utils/doFileExists"
-import User from "../models/user"
-import { createToken } from "../utils/createToken"
 import {
 	describe,
 	it,
@@ -18,6 +10,16 @@ import {
 	afterAll,
 	expect,
 } from "@jest/globals"
+import { questionSchema } from "../types/question"
+import { answerSchema } from "../types/answer"
+import { Quiz as QuizType, quizSchema } from "../types/quiz"
+import { Quiz } from "../models/quiz"
+import { User } from "../models/user"
+import { createServer } from "../utils/createServer"
+import { doFileExists } from "../utils/doFileExists"
+import { createToken } from "../utils/createToken"
+import { quizPayload } from "./fixtures/quiz"
+import { userPayload } from "./fixtures/user"
 import {
 	imageQuestion as imageQuestionPayload,
 	question as questionPayload,
@@ -26,8 +28,6 @@ import {
 	falseAnswer as falseAnswerPayload,
 	trueAnswer as trueAnswerPayload,
 } from "./fixtures/answer"
-import { questionSchema } from "../types/question"
-import { answerSchema } from "../types/answer"
 
 const app = createServer()
 let token: string

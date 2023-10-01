@@ -1,15 +1,11 @@
-import  {
-	Component,
-	ErrorInfo,
-	PropsWithChildren,
-} from "react"
-import ErrorPage from "./ErrorBoundaryPage"
+import { Component, ErrorInfo, PropsWithChildren } from "react"
+import { ErrorPage } from "./ErrorBoundaryPage"
 
 type State = {
 	hasError: boolean
 }
 
-class ErrorBoundary extends Component<PropsWithChildren, State> {
+export class ErrorBoundary extends Component<PropsWithChildren, State> {
 	state: State = { hasError: false }
 
 	public static getDerivedStateFromError(): State {
@@ -28,4 +24,3 @@ class ErrorBoundary extends Component<PropsWithChildren, State> {
 	}
 }
 
-export default ErrorBoundary

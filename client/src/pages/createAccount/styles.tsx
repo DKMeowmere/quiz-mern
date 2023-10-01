@@ -1,5 +1,5 @@
-import { Form } from "../../components/form/Form"
 import { styled } from "../../app/config"
+import { Form } from "../../components/form/Form"
 
 export const RegisterForm = styled(Form)`
 	text-align: center;

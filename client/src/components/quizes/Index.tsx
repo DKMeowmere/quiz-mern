@@ -1,13 +1,13 @@
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { QuizesClient } from "@backend/types/quiz"
-import { useState } from "react"
 import { QuizesContainer } from "./styles"
 
 type Props = {
 	quizes: QuizesClient
 }
 
-export default function Quizes({ quizes }: Props) {
+export function Quizes({ quizes }: Props) {
 	const [quizesState, setQuizesState] = useState(quizes)
 
 	function loadDefaultQuizImage(id: string) {

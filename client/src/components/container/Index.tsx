@@ -5,6 +5,6 @@ type Props = {
 	className?: string
 }
 
-export default function Container({ children, className }: Props) {
+export function Container({ children, className }: Props) {
 	return <StyledContainer className={className}>{children}</StyledContainer>
 }

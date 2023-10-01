@@ -1,5 +1,5 @@
 import { styled } from "../../app/config"
-import Container from "../../components/container/Index"
+import { Container } from "../../components/container/Index"
 
 export const ErrorPageContainer = styled(Container)`
 	display: flex;

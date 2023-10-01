@@ -10,7 +10,7 @@ import { QuestionModal } from "./QuestionModal"
 import { QuestionsList } from "./QuestionsList"
 import { Form } from "../../../components/form/Form"
 import { Textarea } from "../../../components/textarea/TextArea"
-import FileInput from "../../../components/fileInput/Index"
+import { FileInput } from "../../../components/fileInput/Index"
 import { Button } from "../../../components/button/Button"
 
 type Props = {

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { AppState } from "@backend/types/client/appState"
+import { UserClient } from "@backend/types/user"
 import lightTheme from "../themes/lightTheme"
 import darkTheme from "../themes/darkTheme"
-import { UserClient } from "@backend/types/user"
 
 const initialState: AppState = {
 	token: "",

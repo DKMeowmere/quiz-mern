@@ -1,15 +1,15 @@
 import { FormEvent, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../app/config"
-import useSignUp from "../../hooks/useSignUp"
-import Container from "../../components/container/Index"
+import { useSignUp } from "../../hooks/useSignUp"
+import { Container } from "../../components/container/Index"
 import { Textarea } from "../../components/textarea/TextArea"
 import { Button } from "../../components/button/Button"
-import PasswordInput from "../../components/passwordInput/Index"
-import FileInput from "../../components/fileInput/Index"
+import { PasswordInput } from "../../components/passwordInput/Index"
+import { FileInput } from "../../components/fileInput/Index"
 import { RegisterForm } from "./styles"
 
-export default function CreateAccount() {
+export  function CreateAccount() {
 	const isLoggedIn = useAppSelector(state => state.app.isLoggedIn)
 	const theme = useAppSelector(state => state.app.theme)
 	const navigate = useNavigate()

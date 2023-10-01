@@ -15,7 +15,7 @@ import { deleteAnswer } from "../controllers/quiz/deleteAnswer.js"
 import { createQuestion } from "../controllers/quiz/createQuestion.js"
 import { deleteQuestion } from "../controllers/quiz/deleteQuestion.js"
 
-const router = express.Router()
+export const router = express.Router()
 const storage = multer.diskStorage({
 	destination(req, file, callback) {
 		callback(null, "static/uploads/quiz")
@@ -75,4 +75,3 @@ router
 	.route("/:quizId/:questionId/:answerId")
 	.patch(requireAuth, upload.single("file"), updateAnswer)
 	.delete(requireAuth, deleteAnswer)
-export default router

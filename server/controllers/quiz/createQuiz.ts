@@ -1,18 +1,18 @@
-import { CustomRequest } from "../../types/customRequest.js"
 import { Response } from "express"
+import { CustomRequest } from "../../types/customRequest.js"
 import { quizSchema } from "../../types/quiz.js"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
+import { CustomError } from "../../types/customError.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
+import { questionHasNotTrueAnswer } from "../../config/constants/quizErrors.js"
+import { userNotFound } from "../../config/constants/userErrors.js"
+import { Quiz } from "../../models/quiz.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import hasTrueAnswer from "../../utils/quiz/hasTrueAnswer.js"
+import { hasTrueAnswer } from "../../utils/quiz/hasTrueAnswer.js"
 import {
 	createAnswerFile,
 	createMainQuizFile,
 	createQuestionFile,
 } from "./fileCreationUtils.js"
-import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
-import { userNotFound } from "../../utils/errors/user.js"
-import { questionHasNotTrueAnswer } from "../../utils/errors/quiz.js"
 import { removeUnusedFiles } from "../../utils/removeUnusedFiles.js"
 
 export async function createQuiz(req: CustomRequest, res: Response) {

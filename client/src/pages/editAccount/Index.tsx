@@ -5,14 +5,14 @@ import { useAppDispatch, useAppSelector } from "../../app/config"
 import { endLoading, login, startLoading } from "../../app/features/appSlice"
 import { enqueueAlert } from "../../app/features/alertSlice"
 import { useUtils } from "../../hooks/useUtils"
-import useLogin from "../../hooks/useLogin"
+import { useLogin } from "../../hooks/useLogin"
 import { Textarea } from "../../components/textarea/TextArea"
 import { Button } from "../../components/button/Button"
-import Modal from "../../components/modal/Index"
-import FileInput from "../../components/fileInput/Index"
+import { Modal } from "../../components/modal/Index"
+import { FileInput } from "../../components/fileInput/Index"
 import { EditAccountContainer, EditAccountForm } from "./styles"
 
-export default function EditAccount() {
+export function EditAccount() {
 	const isAppLoading = useAppSelector(state => state.app.isAppLoading)
 	const loggedUser = useAppSelector(state => state.app.user)
 	const theme = useAppSelector(state => state.app.theme)

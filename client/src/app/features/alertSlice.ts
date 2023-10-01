@@ -1,5 +1,5 @@
-import { Alert, AlertState } from "@backend/types/client/alert"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { Alert, AlertState } from "@backend/types/client/alert"
 
 const initialState: AlertState = { alertsQueue: [], alertLifeTime: 5000 }
 

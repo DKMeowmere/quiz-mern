@@ -1,19 +1,19 @@
-import { CustomRequest } from "../../types/customRequest.js"
 import { Response } from "express"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
 import mongoose from "mongoose"
-import { handleControllerError } from "../../utils/handleControllerError.js"
-import hasTrueAnswer from "../../utils/quiz/hasTrueAnswer.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
 import { questionSchema } from "../../types/question.js"
 import {
 	invalidQuizId,
 	questionHasNotTrueAnswer,
 	quizNotFound,
 	quizUpdateForbidden,
-} from "../../utils/errors/quiz.js"
-import { userNotFound } from "../../utils/errors/user.js"
-import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
+} from "../../config/constants/quizErrors.js"
+import { userNotFound } from "../../config/constants/userErrors.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
+import { Quiz } from "../../models/quiz.js"
+import { handleControllerError } from "../../utils/handleControllerError.js"
+import { hasTrueAnswer } from "../../utils/quiz/hasTrueAnswer.js"
 import { createAnswerFile, createQuestionFile } from "./fileCreationUtils.js"
 import { removeUnusedFiles } from "../../utils/removeUnusedFiles.js"
 

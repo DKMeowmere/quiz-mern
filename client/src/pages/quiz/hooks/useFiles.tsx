@@ -1,4 +1,5 @@
 import { QuestionClient } from "@backend/types/question"
+import { AnswerClient } from "@backend/types/answer"
 import { useAppDispatch, useAppSelector } from "../../../app/config"
 import { enqueueAlert } from "../../../app/features/alertSlice"
 import {
@@ -6,7 +7,6 @@ import {
 	editQuestion,
 	setQuiz,
 } from "../../../app/features/quizSlice"
-import { AnswerClient } from "@backend/types/answer"
 
 export function useFiles() {
 	const quiz = useAppSelector(state => state.quizGame.quiz)

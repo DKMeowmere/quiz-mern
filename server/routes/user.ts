@@ -10,7 +10,7 @@ import { signUp } from "../controllers/user/signUp.js"
 import { updateUser } from "../controllers/user/updateUser.js"
 import { requireAuth } from "../middlewares/auth.js"
 
-const router = express.Router()
+export const router = express.Router()
 
 const storage = multer.diskStorage({
 	destination(req, file, callback) {
@@ -48,4 +48,3 @@ router
 	.get(getUser)
 	.patch(requireAuth, upload.single("avatar"), updateUser)
 	.delete(requireAuth, deleteUser)
-export default router

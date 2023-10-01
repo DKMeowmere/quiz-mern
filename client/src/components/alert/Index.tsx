@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from "../../app/config"
+import { dequeueAlert } from "../../app/features/alertSlice"
 import { AlertIcon } from "./AlertIcon"
 import { Alert, AlertsContainer } from "./styles"
-import { dequeueAlert } from "../../app/features/alertSlice"
 
-export default function Alerts() {
+export function Alerts() {
 	const alerts = useAppSelector(state => state.alert.alertsQueue)
 	const alertLifeTime = useAppSelector(state => state.alert.alertLifeTime)
 	const dispatch = useAppDispatch()

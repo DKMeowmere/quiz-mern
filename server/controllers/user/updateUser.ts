@@ -1,20 +1,20 @@
-import { CustomRequest } from "../../types/customRequest.js"
-import User from "../../models/user.js"
-import CustomError from "../../types/customError.js"
 import { Response } from "express"
 import mongoose from "mongoose"
 import fs from "fs/promises"
 import path from "path"
-import { handleControllerError } from "../../utils/handleControllerError.js"
-import { removeFile } from "../../utils/removeFile.js"
-import Quiz from "../../models/quiz.js"
-import { filesValidationFailedMustBeImage } from "../../utils/errors/universal.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
+import { filesValidationFailedMustBeImage } from "../../config/constants/universalErrors.js"
 import {
 	authNeeded,
 	invalidUserId,
 	userNotFound,
 	userUpdateForbidden,
-} from "../../utils/errors/user.js"
+} from "../../config/constants/userErrors.js"
+import { User } from "../../models/user.js"
+import { Quiz } from "../../models/quiz.js"
+import { handleControllerError } from "../../utils/handleControllerError.js"
+import { removeFile } from "../../utils/removeFile.js"
 
 export async function updateUser(req: CustomRequest, res: Response) {
 	try {

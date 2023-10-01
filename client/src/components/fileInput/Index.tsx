@@ -10,7 +10,7 @@ type Props = {
 	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function FileInput({
+export function FileInput({
 	width,
 	onChange,
 	text,

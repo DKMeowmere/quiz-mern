@@ -1,24 +1,28 @@
-import { CustomRequest } from "../../types/customRequest.js"
-import { Response } from "express"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
-import { removeFile } from "../../utils/removeFile.js"
 import path from "path"
 import mongoose from "mongoose"
+import { Response } from "express"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
+import { userNotFound } from "../../config/constants/userErrors.js"
+import {
+	invalidQuizId,
+	quizNotFound,
+	quizUpdateForbidden,
+} from "../../config/constants/quizErrors.js"
+import { Quiz } from "../../models/quiz.js"
+import { removeFile } from "../../utils/removeFile.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import { userNotFound } from "../../utils/errors/user.js"
-import { invalidQuizId, quizNotFound, quizUpdateForbidden } from "../../utils/errors/quiz.js"
 
 export async function deleteQuiz(req: CustomRequest, res: Response) {
 	try {
-    if (!req.user) {
-      throw new CustomError(userNotFound)
+		if (!req.user) {
+			throw new CustomError(userNotFound)
 		}
-    
+
 		const { id } = req.params
-    
+
 		if (!mongoose.isValidObjectId(id)) {
-      throw new CustomError(invalidQuizId)
+			throw new CustomError(invalidQuizId)
 		}
 		const quiz = await Quiz.findById(id)
 
@@ -31,7 +35,7 @@ export async function deleteQuiz(req: CustomRequest, res: Response) {
 		}
 
 		await Quiz.findByIdAndDelete(id)
-    
+
 		const mainFilePath = path.resolve(`.${quiz.fileLocation}`)
 		await removeFile(mainFilePath)
 

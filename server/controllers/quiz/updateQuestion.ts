@@ -1,15 +1,12 @@
-import { CustomRequest } from "../../types/customRequest.js"
 import { Response } from "express"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
-import { removeFile } from "../../utils/removeFile.js"
 import fs from "fs/promises"
 import path from "path"
 import mongoose from "mongoose"
-import { handleControllerError } from "../../utils/handleControllerError.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
 import { questionTypeSet } from "../../types/question.js"
-import { userNotFound } from "../../utils/errors/user.js"
-import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
+import { userNotFound } from "../../config/constants/userErrors.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
 import {
 	invalidQuestionId,
 	invalidQuizId,
@@ -18,7 +15,10 @@ import {
 	quizNotFound,
 	quizUpdateForbidden,
 	wrongQuestionType,
-} from "../../utils/errors/quiz.js"
+} from "../../config/constants/quizErrors.js"
+import { Quiz } from "../../models/quiz.js"
+import { removeFile } from "../../utils/removeFile.js"
+import { handleControllerError } from "../../utils/handleControllerError.js"
 
 export async function updateQuestion(req: CustomRequest, res: Response) {
 	try {

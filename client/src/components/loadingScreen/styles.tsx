@@ -1,5 +1,5 @@
-import { styled } from "../../app/config"
 import { keyframes } from "styled-components"
+import { styled } from "../../app/config"
 
 const loadingAnimation = keyframes`
 		from {

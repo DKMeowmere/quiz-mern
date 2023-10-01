@@ -1,13 +1,13 @@
 import { FormEvent, useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAppSelector } from "../../app/config"
-import useLogin from "../../hooks/useLogin"
+import { useLogin } from "../../hooks/useLogin"
 import { Button } from "../../components/button/Button"
-import Container from "../../components/container/Index"
-import PasswordInput from "../../components/passwordInput/Index"
+import { Container } from "../../components/container/Index"
+import { PasswordInput } from "../../components/passwordInput/Index"
 import { LoginForm } from "./styles"
 
-export default function Login() {
+export function Login() {
 	const theme = useAppSelector(state => state.app.theme)
 	const isLoggedIn = useAppSelector(state => state.app.isLoggedIn)
 	const [email, setEmail] = useState("ronaldreagan@usa.com")

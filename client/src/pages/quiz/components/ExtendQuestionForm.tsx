@@ -3,10 +3,10 @@ import { useAppSelector } from "../../../app/config"
 import { DEFAULT_QUESTION_IMAGE_URL } from "../../../app/constants"
 import { useFiles } from "../hooks/useFiles"
 import { useQuestion } from "../hooks/useQuestion"
-import { Button } from "../../../components/button/Button"
-import FileInput from "../../../components/fileInput/Index"
-import { AudioPlayer } from "../../../components/audioPlayer/Index"
 import { useUtils } from "../../../hooks/useUtils"
+import { Button } from "../../../components/button/Button"
+import { FileInput } from "../../../components/fileInput/Index"
+import { AudioPlayer } from "../../../components/audioPlayer/Index"
 
 type Props = {
 	question: QuestionClient

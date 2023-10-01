@@ -1,16 +1,16 @@
 import express from "express"
 import cors from "cors"
-import env from "../config/envVariables.js"
-import quizRouter from "../routes/quiz.js"
-import userRouter from "../routes/user.js"
-import morgan from "morgan"
-import { setupCustomRequest } from "../middlewares/setupCustomRequest.js"
 import path from "path"
+import morgan from "morgan"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
-import resetServerAndDb from "./resetServer.js"
+import { env } from "../config/envVariables.js"
+import { router as  quizRouter } from "../routes/quiz.js"
+import { router as userRouter } from "../routes/user.js"
+import { setupCustomRequest } from "../middlewares/setupCustomRequest.js"
+import { resetServerAndDb } from "./resetServer.js"
 
-function createServer() {
+export function createServer() {
 	const app = express()
 
 	const __filename = fileURLToPath(import.meta.url)
@@ -45,4 +45,3 @@ function createServer() {
 	return app
 }
 
-export default createServer

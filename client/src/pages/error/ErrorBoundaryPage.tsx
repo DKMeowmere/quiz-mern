@@ -3,10 +3,10 @@ import { Link } from "react-router-dom"
 import { ErrorPageContainer } from "./styles"
 import { useAppDispatch, useAppSelector } from "../../app/config"
 import { setQuiz } from "../../app/features/quizSlice"
-import useLogin from "../../hooks/useLogin"
+import { useLogin } from "../../hooks/useLogin"
 import { Button } from "../../components/button/Button"
 
-export default function ErrorPage() {
+export function ErrorPage() {
 	const isUserLoggedIn = useAppSelector(state => state.app.isLoggedIn)
 	const [hasUserBeenLoggedIn, setHasUserBeenLoggedIn] = useState(false)
 	const theme = useAppSelector(state => state.app.theme)

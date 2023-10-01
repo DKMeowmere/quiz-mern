@@ -26,6 +26,5 @@ const unvalidatedEnv = {
 	SALT_ROUNDS,
 }
 
-const env = envSchema.parse(unvalidatedEnv)
+export const env = envSchema.parse(unvalidatedEnv)
 
-export default env

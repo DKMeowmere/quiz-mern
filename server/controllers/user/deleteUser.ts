@@ -1,17 +1,17 @@
-import { CustomRequest } from "../../types/customRequest.js"
-import User from "../../models/user.js"
-import CustomError from "../../types/customError.js"
 import { Response } from "express"
 import mongoose from "mongoose"
 import path from "path"
-import { handleControllerError } from "../../utils/handleControllerError.js"
-import { removeFile } from "../../utils/removeFile.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
 import {
 	authNeeded,
 	invalidUserId,
 	userNotFound,
 	userUpdateForbidden,
-} from "../../utils/errors/user.js"
+} from "../../config/constants/userErrors.js"
+import { User } from "../../models/user.js"
+import { removeFile } from "../../utils/removeFile.js"
+import { handleControllerError } from "../../utils/handleControllerError.js"
 
 export async function deleteUser(req: CustomRequest, res: Response) {
 	try {

@@ -1,15 +1,15 @@
-import { CustomRequest } from "../../types/customRequest.js"
-import User from "../../models/user.js"
-import CustomError from "../../types/customError.js"
-import env from "../../config/envVariables.js"
-import { userSchema } from "../../types/user.js"
 import fs from "fs/promises"
 import path from "path"
 import bcrypt from "bcrypt"
+import { Response } from "express"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
+import { userSchema } from "../../types/user.js"
+import { env } from "../../config/envVariables.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
+import { User } from "../../models/user.js"
 import { createToken } from "../../utils/createToken.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import { Response } from "express"
-import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
 
 export async function signUp(req: CustomRequest, res: Response) {
 	try {

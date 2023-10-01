@@ -11,7 +11,7 @@ import {
 } from "../app/features/appSlice"
 import { useUtils } from "./useUtils"
 
-export default function useLogin() {
+export function useLogin() {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	const [cookies, setCookies] = useCookies()

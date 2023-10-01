@@ -3,7 +3,7 @@ import appSlice from "./features/appSlice"
 import alertSlice from "./features/alertSlice"
 import quizGameSlice from "./features/quizSlice"
 
-const store = configureStore({
+export const store = configureStore({
 	reducer: {
 		app: appSlice,
 		alert: alertSlice,
@@ -13,4 +13,3 @@ const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
-export default store

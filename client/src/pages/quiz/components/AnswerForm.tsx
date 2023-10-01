@@ -5,9 +5,9 @@ import { RootState } from "../../../app/store"
 import { useAnswer } from "../hooks/useAnswer"
 import { getQuestionById } from "./QuestionModal"
 import { Button } from "../../../components/button/Button"
-import { AnswerFormContainer } from "../styles"
 import { IsTrueIcon } from "../../../components/isTrueIcon/Index"
 import { ExtendAnswer } from "./ExtendAnswerForm"
+import { AnswerFormContainer } from "../styles"
 
 type Props = {
 	questionId: string

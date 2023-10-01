@@ -3,7 +3,7 @@ import { useAppSelector } from "../../app/config"
 import { Button } from "../../components/button/Button"
 import { HomeContainer } from "./styles"
 
-export default function Home() {
+export function Home() {
 	const theme = useAppSelector(state => state.app.theme)
 
 	return (

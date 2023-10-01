@@ -1,6 +1,6 @@
-import { CustomRequest } from "../../types/customRequest.js"
-import User from "../../models/user.js"
 import { Response } from "express"
+import { CustomRequest } from "../../types/customRequest.js"
+import { User } from "../../models/user.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
 
 export async function getUsers(req: CustomRequest, res: Response) {

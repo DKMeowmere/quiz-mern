@@ -18,7 +18,7 @@ type SignUpProps = {
 	avatar: File | null
 }
 
-export default function useSignUp() {
+export function useSignUp() {
 	const dispatch = useAppDispatch()
 	const [, setCookies] = useCookies()
 	const navigate = useNavigate()

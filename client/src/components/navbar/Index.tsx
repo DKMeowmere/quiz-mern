@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs"
+import { AiFillHome } from "react-icons/ai"
 import { useAppDispatch, useAppSelector } from "../../app/config"
 import { setTheme } from "../../app/features/appSlice"
 import { Button } from "../button/Button"
 import { NavbarContainer } from "./styles"
-import { BsFillSunFill, BsFillMoonFill } from "react-icons/bs"
-import { AiFillHome } from "react-icons/ai"
-import { Link } from "react-router-dom"
 
-export default function Navbar() {
+export function Navbar() {
 	const themeType = useAppSelector(state => state.app.themeType)
 	const theme = useAppSelector(state => state.app.theme)
 	const isLoggedIn = useAppSelector(state => state.app.isLoggedIn)

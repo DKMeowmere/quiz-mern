@@ -1,5 +1,5 @@
-import { AlertTypes } from "@backend/types/client/alert"
 import { MdError, MdInfo, MdWarning, MdDone } from "react-icons/md"
+import { AlertTypes } from "@backend/types/client/alert"
 
 type Props = {
 	type: AlertTypes

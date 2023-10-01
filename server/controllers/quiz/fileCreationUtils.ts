@@ -3,11 +3,11 @@ import path from "path"
 import { HydratedDocument } from "mongoose"
 import { CustomRequest } from "../../types/customRequest.js"
 import { Quiz as QuizType } from "../../types/quiz.js"
-import CustomError from "../../types/customError.js"
+import { CustomError } from "../../types/customError.js"
 import { Question } from "../../types/question.js"
 import { Answer } from "../../types/answer.js"
+import { invalidFileName } from "../../config/constants/universalErrors.js"
 import { removeFile } from "../../utils/removeFile.js"
-import { invalidFileName } from "../../utils/errors/universal.js"
 
 export async function createMainQuizFile(
 	req: CustomRequest,

@@ -1,6 +1,6 @@
+import { useEffect } from "react"
 import { RiCloseCircleFill } from "react-icons/ri"
 import { ModalContainer } from "./styles"
-import { useEffect } from "react"
 
 type Props = {
 	children: any
@@ -8,7 +8,7 @@ type Props = {
 	className?: string
 }
 
-export default function Modal({
+export function Modal({
 	children,
 	closeCallback,
 	className,

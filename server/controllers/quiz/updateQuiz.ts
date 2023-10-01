@@ -1,19 +1,19 @@
-import { CustomRequest } from "../../types/customRequest.js"
 import { Response } from "express"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
 import fs from "fs/promises"
 import path from "path"
 import mongoose from "mongoose"
-import { handleControllerError } from "../../utils/handleControllerError.js"
-import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
-import { userNotFound } from "../../utils/errors/user.js"
+import { CustomRequest } from "../../types/customRequest.js"
+import { CustomError } from "../../types/customError.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
+import { userNotFound } from "../../config/constants/userErrors.js"
 import {
 	invalidQuizId,
 	noQuizTitle,
 	quizNotFound,
 	quizUpdateForbidden,
-} from "../../utils/errors/quiz.js"
+} from "../../config/constants/quizErrors.js"
+import { Quiz } from "../../models/quiz.js"
+import { handleControllerError } from "../../utils/handleControllerError.js"
 
 export async function updateQuiz(req: CustomRequest, res: Response) {
 	try {

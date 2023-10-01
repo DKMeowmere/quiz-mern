@@ -1,7 +1,7 @@
-import { LoadingScreenContainer } from "./styles"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
+import { LoadingScreenContainer } from "./styles"
 
-export default function LoadingSceen() {
+export function LoadingScreen() {
 	return (
 		<LoadingScreenContainer>
 			<AiOutlineLoading3Quarters />

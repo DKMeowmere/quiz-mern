@@ -1,6 +1,6 @@
 import { styled } from "../../app/config"
-import Container from "../../components/container/Index"
-import Modal from "../../components/modal/Index"
+import { Container } from "../../components/container/Index"
+import { Modal } from "../../components/modal/Index"
 
 export const QuizPageContainer = styled(Container)`
 	text-align: center;

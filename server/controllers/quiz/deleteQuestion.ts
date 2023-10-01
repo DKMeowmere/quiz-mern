@@ -1,19 +1,19 @@
-import { CustomRequest } from "../../types/customRequest.js"
 import { Response } from "express"
-import CustomError from "../../types/customError.js"
-import Quiz from "../../models/quiz.js"
-import { removeFile } from "../../utils/removeFile.js"
 import mongoose from "mongoose"
+import path from "path"
+import { CustomRequest } from "../../types/customRequest.js"
+import { Question } from "../../types/question.js"
+import { CustomError } from "../../types/customError.js"
 import {
 	invalidQuestionId,
 	invalidQuizId,
 	questionNotFound,
 	quizNotFound,
 	quizUpdateForbidden,
-} from "../../utils/errors/quiz.js"
-import { Question } from "../../types/question.js"
+} from "../../config/constants/quizErrors.js"
+import { Quiz } from "../../models/quiz.js"
+import { removeFile } from "../../utils/removeFile.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
-import path from "path"
 
 export async function deleteQuestion(req: CustomRequest, res: Response) {
 	try {

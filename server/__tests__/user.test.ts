@@ -1,3 +1,5 @@
+import { MongoMemoryServer } from "mongodb-memory-server"
+import mongoose from "mongoose"
 import {
 	describe,
 	it,
@@ -6,18 +8,16 @@ import {
 	beforeEach,
 	afterAll,
 } from "@jest/globals"
-import createServer from "../utils/createServer"
-import { MongoMemoryServer } from "mongodb-memory-server"
-import mongoose from "mongoose"
-import User from "../models/user"
-import { userPayload } from "./fixtures/user"
-import Quiz from "../models/quiz"
-import { quizPayload } from "./fixtures/quiz"
+import path from "path"
 import request from "supertest"
 import { userSchemaWithoutPassword } from "../types/user"
+import { User } from "../models/user"
+import { Quiz } from "../models/quiz"
+import { createServer } from "../utils/createServer"
 import { createToken } from "../utils/createToken"
 import { doFileExists } from "../utils/doFileExists"
-import path from "path"
+import { userPayload } from "./fixtures/user"
+import { quizPayload } from "./fixtures/quiz"
 
 const app = createServer()
 
@@ -378,7 +378,7 @@ describe("USER /api/user", () => {
 					.field("biography", "UPDATED BIOGRAPHY")
 					.attach("avatar", "__tests__/fixtures/files/ronaldReagan.jpg")
 
-        const { success } = await userSchemaWithoutPassword.safeParse(user)
+				const { success } = await userSchemaWithoutPassword.safeParse(user)
 
 				expect(statusCode).toBe(200)
 				expect(success).toBeTruthy()

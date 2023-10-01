@@ -1,6 +1,6 @@
 import { z } from "zod"
-import hasTrueAnswer from "../utils/quiz/hasTrueAnswer.js"
 import { answerSchema, AnswerClientSchema } from "./answer.js"
+import { hasTrueAnswer } from "../utils/quiz/hasTrueAnswer.js"
 
 export const questionTypeEnum = ["TEXT", "IMAGE", "AUDIO"] as const
 export const questionTypeSet = new Set(questionTypeEnum)

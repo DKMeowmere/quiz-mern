@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/config"
 import { initQuiz } from "../../app/features/quizSlice"
 import { QuizPageContainer } from "./styles"
-import LoadingSceen from "../../components/loadingScreen/Index"
+import { LoadingScreen } from "../../components/loadingScreen/Index"
 import { QuizForm } from "./components/QuizForm"
 
 export function CreateQuiz() {
@@ -21,7 +21,7 @@ export function CreateQuiz() {
 	}, [user, isLoggedIn])
 
 	if (isAppLoading) {
-		return <LoadingSceen />
+		return <LoadingScreen />
 	}
 
 	if (!isLoggedIn) {

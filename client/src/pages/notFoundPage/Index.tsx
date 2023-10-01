@@ -1,9 +1,9 @@
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch } from "../../app/config"
 import { enqueueAlert } from "../../app/features/alertSlice"
-import { useEffect } from "react"
 
-export default function NotFound() {
+export function NotFound() {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
 

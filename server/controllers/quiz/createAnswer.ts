@@ -1,10 +1,10 @@
 import { Response } from "express"
+import fs from "fs/promises"
+import path from "path"
+import mongoose from "mongoose"
 import { CustomRequest } from "../../types/customRequest"
-import { handleControllerError } from "../../utils/handleControllerError.js"
-import CustomError from "../../types/customError.js"
-import { filesValidationFailedMustBeImageOrAudio } from "../../utils/errors/universal.js"
+import { CustomError } from "../../types/customError.js"
 import { answerSchema } from "../../types/answer.js"
-import Quiz from "../../models/quiz.js"
 import {
 	questionNotFound,
 	quizNotFound,
@@ -12,10 +12,10 @@ import {
 	maximumNumberOfAnswersExceeded,
 	invalidQuestionId,
 	invalidQuizId,
-} from "../../utils/errors/quiz.js"
-import fs from "fs/promises"
-import path from "path"
-import mongoose from "mongoose"
+} from "../../config/constants/quizErrors.js"
+import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
+import { Quiz } from "../../models/quiz.js"
+import { handleControllerError } from "../../utils/handleControllerError.js"
 
 export async function createAnswer(req: CustomRequest, res: Response) {
 	try {
