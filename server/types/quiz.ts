@@ -1,17 +1,20 @@
 import { z } from "zod"
 import { QuestionClientSchema, questionSchema } from "./question.js"
 
-export const quizSchema = z.object({
+export const quizOnlySchema = z.object({
 	_id: z.string().nullish(),
 	title: z
 		.string()
 		.min(4, { message: "Tytuł musi składać się minimum z 4 znaków" }),
 	description: z.string().default("").catch(""),
 	fileLocation: z.string().nullish().catch(undefined),
+	creatorId: z.string().catch("unknown"),
+})
+
+export const quizSchema = quizOnlySchema.extend({
 	questions: z
 		.array(questionSchema)
 		.nonempty({ message: "Musisz podać przynajmniej jedno pytanie" }),
-	creatorId: z.string().catch("unknown"),
 })
 
 export const quizClientSchema = quizSchema.extend({

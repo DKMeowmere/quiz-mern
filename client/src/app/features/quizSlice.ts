@@ -8,7 +8,10 @@ const initialState: QuizGameState = {
 	quiz: null,
 	timer: 0,
 	userPoints: 0,
+	currentQuestionIndex: 0,
 	isGameStarted: false,
+	isGameEnded: false,
+	answeredQuestions: [],
 	form: {
 		isQuestionModalOpen: false,
 		modalQuestionId: "",
@@ -19,12 +22,6 @@ const quizGameSlice = createSlice({
 	initialState,
 	name: "quiz",
 	reducers: {
-		reset: state => {
-			state.quiz = null
-			state.timer = 0
-			state.userPoints = 0
-			state.isGameStarted = false
-		},
 		initQuiz: (state, action: PayloadAction<string>) => {
 			const creatorId = action.payload
 
@@ -42,19 +39,6 @@ const quizGameSlice = createSlice({
 			const quiz = action.payload
 
 			state.quiz = quiz
-		},
-		startGame: state => {
-			state.isGameStarted = true
-		},
-		answerQuestion: (state, action: PayloadAction<AnswerClient>) => {
-			const answer = action.payload
-
-			if (answer.isTrue) {
-				state.userPoints++
-			}
-		},
-		endGame: state => {
-			state.isGameStarted = false
 		},
 		addQuestion: (state, action: PayloadAction<QuestionClient>) => {
 			if (!state.quiz) {
@@ -163,9 +147,6 @@ const quizGameSlice = createSlice({
 				questionIndex
 			].answers.filter(answer => answer._id !== answerId)
 		},
-		tick: state => {
-			state.timer++
-		},
 		openModal: (state, action: PayloadAction<QuestionClient>) => {
 			const question = action.payload
 			state.form.isQuestionModalOpen = true
@@ -173,6 +154,48 @@ const quizGameSlice = createSlice({
 		},
 		closeModal: state => {
 			state.form.isQuestionModalOpen = false
+		},
+		startGame: state => {
+			state.isGameStarted = true
+			state.isGameEnded = false
+		},
+		endGame: state => {
+			state.isGameStarted = false
+			state.isGameEnded = true
+		},
+		tick: state => {
+			state.timer++
+		},
+		reset: state => {
+			state.timer = 0
+			state.userPoints = 0
+			state.currentQuestionIndex = 0
+			state.isGameStarted = false
+			state.isGameEnded = false
+			state.answeredQuestions = []
+		},
+		answerQuestion: (
+			state,
+			action: PayloadAction<{ question: QuestionClient; answer: AnswerClient }>
+		) => {
+			if (!state.quiz) {
+				throw new Error("Quiz is null")
+			}
+
+			const answer = action.payload.answer
+			const question = action.payload.question
+
+			if (answer.isTrue) {
+				state.userPoints++
+			}
+
+			state.answeredQuestions.push({
+				question,
+				didUserAnsweredCorrectly: answer.isTrue,
+				answeredAnswerId: answer._id,
+			})
+
+			state.currentQuestionIndex++
 		},
 	},
 })
@@ -187,11 +210,11 @@ export const {
 	removeAnswer,
 	startGame,
 	endGame,
-	answerQuestion,
 	addQuestion,
 	editQuestion,
 	initQuiz,
 	openModal,
 	closeModal,
+	answerQuestion,
 } = quizGameSlice.actions
 export default quizGameSlice.reducer

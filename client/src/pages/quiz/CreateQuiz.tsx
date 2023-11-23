@@ -1,9 +1,9 @@
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/config"
 import { initQuiz } from "../../app/features/quizSlice"
-import { QuizPageContainer } from "./styles"
 import { LoadingScreen } from "../../components/loadingScreen/Index"
-import { QuizForm } from "./components/QuizForm"
+import { QuizForm } from "./components/quizForm/Index"
+import { Container } from "../../components/container/Index"
 
 export function CreateQuiz() {
 	const quiz = useAppSelector(state => state.quizGame.quiz)
@@ -26,17 +26,17 @@ export function CreateQuiz() {
 
 	if (!isLoggedIn) {
 		return (
-			<QuizPageContainer>
+			<Container>
 				<h1>Musisz być zalogowany by to zrobić</h1>
-			</QuizPageContainer>
+			</Container>
 		)
 	}
 
 	if (!quiz) {
 		return (
-			<QuizPageContainer>
+			<Container>
 				<h1>Błąd podczas inicjalizacji quizu</h1>
-			</QuizPageContainer>
+			</Container>
 		)
 	}
 

@@ -1,42 +1,59 @@
-import user from "../fixtures/user"
+import { user } from "../fixtures/user"
 
 context("user", () => {
 	describe("given the user info", () => {
-		it("creates user and logs in, and then deletes it", () => {
+		it("should create user, log in, and then delete it", () => {
 			cy.createAccount(user)
-			cy.deleteAccount()
+
+			cy.wait(1000)
+			//wait 1s, timeouts not working for getCookie
+			cy.getCookie("token").should("exist")
+			cy.store().its("app").its("isLoggedIn").should("be.true")
+
+			cy.getUser()
+				.its("_id")
+				.then(id => {
+					cy.visit(`/user/${id}/edit`)
+					cy.getBySel("open-delete-account-modal-btn").click()
+					cy.getBySel("delete-account-btn").click()
+				})
+
+			cy.wait(1000)
+			cy.store().its("app").its("isLoggedIn").should("be.false")
 		})
-		it("updates account", () => {
+		it("should update account", () => {
 			cy.createAccount(user)
 
-			cy.window().then(win => {
-				cy.visit(`/user/${win.store.getState().app.user._id}/edit`)
+			cy.getUser()
+				.its("_id")
+				.then(id => {
+					cy.visit(`/user/${id}/edit`)
 
-				cy.getBySel("name-input").clear().type("updated name")
-				cy.getBySel("biography-input").clear().type("updated biography")
-				cy.getBySel("submit-btn").click()
-				cy.wait(1000)
-				cy.serverRequest(`/api/user/${win.store.getState().app.user._id}`).then(
-					res => {
+					cy.getBySel("name-input").clear().type("updated name")
+					cy.getBySel("biography-input").clear().type("updated biography")
+					cy.getBySel("submit-btn").click()
+
+					cy.wait(1000)
+					cy.serverRequest(`/api/user/${id}`).then(res => {
+						console.log(res)
 						expect(res.status).to.equal(200)
 						expect(res.body.name).to.equal("updated name")
 						expect(res.body.biography).to.equal("updated biography")
-					}
-				)
-			})
-
-			cy.deleteAccount()
+					})
+				})
 		})
-		it("renders user page correctly", () => {
+		it("should render user page correctly", () => {
 			cy.createAccount(user)
 
-			cy.window().then(win => {
-				cy.visit(`/user/${win.store.getState().app.user._id}`)
+			cy.getUser()
+				.its("_id")
+				.then(id => {
+					cy.visit(`/user/${id}`)
 
-				cy.getBySel("avatar")
-				cy.getBySel("user-name")
-				cy.getBySel("user-biography")
-			})
+					cy.getBySel("avatar")
+					cy.getBySel("user-name")
+					cy.getBySel("user-biography")
+				})
 		})
 	})
 })

@@ -4,21 +4,21 @@ import path from "path"
 import mongoose from "mongoose"
 import { CustomRequest } from "../../types/customRequest.js"
 import { CustomError } from "../../types/customError.js"
-import { filesValidationFailedMustBeImageOrAudio } from "../../config/constants/universalErrors.js"
+import { filesValidationFailedMustBeImage } from "../../config/constants/universalErrors.js"
 import { userNotFound } from "../../config/constants/userErrors.js"
 import {
 	invalidQuizId,
-	noQuizTitle,
 	quizNotFound,
 	quizUpdateForbidden,
 } from "../../config/constants/quizErrors.js"
 import { Quiz } from "../../models/quiz.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
+import { quizOnlySchema } from "../../types/quiz.js"
 
 export async function updateQuiz(req: CustomRequest, res: Response) {
 	try {
 		if (!req.isFilesValidationPassed) {
-			throw new CustomError(filesValidationFailedMustBeImageOrAudio)
+			throw new CustomError(filesValidationFailedMustBeImage)
 		}
 
 		if (!req.user) {
@@ -27,9 +27,10 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 
 		const { id } = req.params
 		const { title, description } = req.body
+		const result = quizOnlySchema.safeParse(req.body)
 
-		if (!title) {
-			throw new CustomError(noQuizTitle)
+		if (!result.success) {
+			throw new CustomError({ message: result.error.message, statusCode: 400 })
 		}
 
 		if (!mongoose.isValidObjectId(id)) {
@@ -53,18 +54,14 @@ export async function updateQuiz(req: CustomRequest, res: Response) {
 				`./static/uploads/quiz/${newFileName}`
 			)
 			await fs.rename(prevFilePath, absolutePathToFile)
+			quiz.fileLocation = `/static/uploads/quiz/${newFileName}`
 		}
 
-		const updatedQuiz = await Quiz.findByIdAndUpdate(
-			id,
-			{
-				title,
-				description,
-			},
-			{ new: true }
-		)
+		quiz.title = title
+		quiz.description = description
 
-		res.json(updatedQuiz)
+		await quiz.save()
+		res.json(quiz)
 	} catch (err) {
 		await handleControllerError(req, res, err)
 	}

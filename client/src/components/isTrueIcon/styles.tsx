@@ -4,6 +4,7 @@ type Props = {
 	width?: string
 	height?: string
 	isTrue: boolean
+	interactive?: boolean
 }
 
 export const IconContainer = styled.div<Props>`
@@ -15,7 +16,7 @@ export const IconContainer = styled.div<Props>`
 	border-radius: 50%;
 	background-color: ${({ theme, isTrue }) =>
 		isTrue ? theme.colors.successMain : theme.colors.errorMain};
-	cursor: pointer;
+	cursor: ${({ interactive }) => (interactive ? "cursor" : "default")};
 	svg {
 		color: ${({ theme }) => theme.colors.whiteText};
 	}

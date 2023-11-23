@@ -244,7 +244,8 @@ describe("USER /api/user", () => {
 				expect(statusCode).toBe(200)
 				expect(success).toBeTruthy()
 				expect(newToken).toBeDefined()
-				expect(user.userQuizes).toHaveLength(1)
+				//quizes array should be empty,
+				expect(user.userQuizes).toHaveLength(0)
 				expect(user.password).toBe("")
 			})
 		})
@@ -286,7 +287,8 @@ describe("USER /api/user", () => {
 
 				expect(statusCode).toBe(200)
 				expect(user.password).toBe("")
-				expect(user.userQuizes).toHaveLength(1)
+        //quizes array should be empty,
+				expect(user.userQuizes).toHaveLength(0)
 				expect(newToken).toBeDefined()
 			})
 		})

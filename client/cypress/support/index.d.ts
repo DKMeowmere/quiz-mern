@@ -9,13 +9,28 @@ declare namespace Cypress {
 			dataTestPrefixAttribute: string,
 			args?: any
 		): Chainable<JQuery<HTMLElement>>
-		serverRequest(url: string): Cypress.Chainable<any>
+		serverRequest(
+			url: string,
+			options: Cypress.RequestBody = {}
+		): Cypress.Chainable<any>
+		store(): Cypress.Chainable<any>
+		dispatch(...args: any[]): void
 		createAccount(
 			user: Omit<
 				import("../../../server/types/client/types/user").User,
 				"userQuizes" | "_id"
 			>
 		): void
-		deleteAccount(): void
+		createQuiz(): void
+		createFullQuiz(): void
+		getQuizGameState(): Chainable<any>
+		getQuiz(): Chainable<any>
+		addQuestion(): void
+		addFullQuestion(): void
+		getQuestion(questionIndex: number): Chainable<any>
+		addAnswer(): void
+		getAnswer(questionIndex: number, answerIndex: number): Chainable<any>
+
+    getUser(): Chainable<any>
 	}
 }

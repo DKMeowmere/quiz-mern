@@ -5,12 +5,25 @@ type Props = {
 	width?: string
 	height?: string
 	isTrue: boolean
+	interactive?: boolean
 	[key: string]: any
 }
 
-export function IsTrueIcon({ isTrue, width, height, ...rest }: Props) {
+export function IsTrueIcon({
+	isTrue,
+	width,
+	height,
+	interactive,
+	...rest
+}: Props) {
 	return (
-		<IconContainer isTrue={isTrue} width={width} height={height} {...rest}>
+		<IconContainer
+			isTrue={isTrue}
+			width={width}
+			height={height}
+			interactive={interactive }
+			{...rest}
+		>
 			{isTrue ? <AiOutlineCheck /> : <AiOutlineClose />}
 		</IconContainer>
 	)

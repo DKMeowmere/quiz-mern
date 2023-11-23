@@ -6,31 +6,25 @@ import {
 	endLoading,
 	login,
 	setToken,
+	setUser,
 	startLoading,
 } from "../app/features/appSlice"
 import { useUtils } from "./useUtils"
-
-type SignUpProps = {
-	name: string
-	email: string
-	password: string
-	biography: string
-	avatar: File | null
-}
+import { UserClient } from "@backend/types/user"
 
 export function useSignUp() {
 	const dispatch = useAppDispatch()
 	const [, setCookies] = useCookies()
 	const navigate = useNavigate()
-	const { handleErrorWithAlert } = useUtils()
+	const { handleErrorWithAlert, getFileFromUrl } = useUtils()
 
 	async function signUp({
 		name,
 		email,
 		password,
 		biography,
-		avatar,
-	}: SignUpProps) {
+		avatarLocation,
+	}: UserClient) {
 		try {
 			if (!name) {
 				throw new Error("Wprowadź nazwe")
@@ -43,6 +37,8 @@ export function useSignUp() {
 			if (!password) {
 				throw new Error("Wprowadź hasło")
 			}
+
+			const avatar = await getFileFromUrl(avatarLocation, "avatar.png")
 
 			if (!avatar) {
 				throw new Error("Podaj zdjęcie profilowe")
@@ -72,7 +68,8 @@ export function useSignUp() {
 				enqueueAlert({ body: "Zalogowano się pomyślnie", type: "SUCCESS" })
 			)
 			dispatch(setToken(token))
-			dispatch(login(user))
+			dispatch(login())
+			dispatch(setUser(user))
 			setCookies("token", token, { path: "/" })
 			dispatch(endLoading())
 

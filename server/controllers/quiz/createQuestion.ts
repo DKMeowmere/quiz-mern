@@ -41,6 +41,7 @@ export async function createQuestion(req: CustomRequest, res: Response) {
 		}
 
 		const question = result.data
+		question._id = new mongoose.Types.ObjectId().toString()
 
 		if (!hasTrueAnswer(question.answers)) {
 			throw new CustomError(questionHasNotTrueAnswer())
@@ -64,6 +65,7 @@ export async function createQuestion(req: CustomRequest, res: Response) {
 
 		for (let i = 0; i < question.answers.length; i++) {
 			const answer = question.answers[i]
+			answer._id = new mongoose.Types.ObjectId().toString()
 			await createAnswerFile(req, answer)
 		}
 

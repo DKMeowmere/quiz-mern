@@ -38,7 +38,7 @@ export function useQuestion() {
 		if (title.length > 22) {
 			return `${title.slice(0, 20)}...`
 		}
-    
+
 		return title
 	}
 

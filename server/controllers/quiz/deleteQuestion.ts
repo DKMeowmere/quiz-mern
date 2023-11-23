@@ -7,6 +7,7 @@ import { CustomError } from "../../types/customError.js"
 import {
 	invalidQuestionId,
 	invalidQuizId,
+	minimumNumberOfQustionsExceeded,
 	questionNotFound,
 	quizNotFound,
 	quizUpdateForbidden,
@@ -35,6 +36,10 @@ export async function deleteQuestion(req: CustomRequest, res: Response) {
 
 		if (req.user!._id?.toString() !== quiz.creatorId) {
 			throw new CustomError(quizUpdateForbidden)
+		}
+
+    if (quiz.questions.length === 1) {
+			throw new CustomError(minimumNumberOfQustionsExceeded)
 		}
 
 		const questionIndex = quiz.questions.findIndex(

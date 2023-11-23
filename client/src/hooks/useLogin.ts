@@ -7,6 +7,7 @@ import {
 	login,
 	setToken,
 	startLoading,
+	setUser,
 	logout as logoutAction,
 } from "../app/features/appSlice"
 import { useUtils } from "./useUtils"
@@ -14,7 +15,7 @@ import { useUtils } from "./useUtils"
 export function useLogin() {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-	const [cookies, setCookies] = useCookies()
+	const [cookies, setCookie] = useCookies()
 	const { handleErrorWithAlert, handleError } = useUtils()
 
 	async function loginWithEmail(email: string, password: string) {
@@ -54,13 +55,15 @@ export function useLogin() {
 			dispatch(
 				enqueueAlert({ body: "Zalogowano się pomyślnie", type: "SUCCESS" })
 			)
-			dispatch(setToken(token))
-			dispatch(login(user))
-			setCookies("token", token, { path: "/" })
+			dispatch(login())
+			dispatch(setUser(user))
+      dispatch(setToken(token))
+			setCookie("token", token, { path: "/" })
 
 			navigate("/")
 		} catch (err: unknown) {
 			handleErrorWithAlert(err)
+			setCookie("token", null, { path: "/" })
 		}
 	}
 
@@ -86,17 +89,18 @@ export function useLogin() {
 			}
 
 			dispatch(setToken(token))
-			dispatch(login(user))
-			setCookies("token", token, { path: "/" })
+			dispatch(login())
+			dispatch(setUser(user))
+			setCookie("token", token, { path: "/" })
 		} catch (err: unknown) {
 			handleError()
-			setCookies("token", null, { path: "/" })
+			setCookie("token", null, { path: "/" })
 		}
 	}
 
 	function logout() {
 		dispatch(logoutAction())
-		setCookies("token", null, { path: "/" })
+		setCookie("token", null, { path: "/" })
 	}
 
 	return { loginWithEmail, loginWithToken, logout }

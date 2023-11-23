@@ -5,12 +5,22 @@ import { hasTrueAnswer } from "../utils/quiz/hasTrueAnswer.js"
 export const questionTypeEnum = ["TEXT", "IMAGE", "AUDIO"] as const
 export const questionTypeSet = new Set(questionTypeEnum)
 
+export const questionOnlySchema = z.object({
+	_id: z.string().nullish(),
+	title: z
+		.string()
+		.min(1, { message: "Tytuł pytania musi składać się minimum z 1 znaku" }),
+	type: z.enum(questionTypeEnum),
+	originalFileName: z.string().optional().catch(undefined),
+	fileLocation: z.string().nullable().catch(null),
+})
+
 export const questionSchema = z
 	.object({
 		_id: z.string().nullish(),
 		title: z
 			.string()
-			.min(4, { message: "Tytuł pytania musi składać się minimum z 4 znaków" }),
+			.min(1, { message: "Tytuł pytania musi składać się minimum z 1 znaku" }),
 		type: z.enum(questionTypeEnum),
 		fileLocation: z.string().nullable().catch(null),
 		answers: z
@@ -30,7 +40,7 @@ export const QuestionClientSchema = z
 		_id: z.string(),
 		title: z
 			.string()
-			.min(4, { message: "Tytuł pytania musi składać się minimum z 4 znaków" }),
+			.min(1, { message: "Tytuł pytania musi składać się minimum z 1 znaku" }),
 		type: z.enum(questionTypeEnum),
 		originalFileName: z.string().optional().catch(undefined),
 		fileLocation: z.string().nullable().catch(null),

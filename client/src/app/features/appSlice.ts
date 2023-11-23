@@ -9,6 +9,7 @@ const initialState: AppState = {
 	themeType: "LIGHT",
 	theme: lightTheme,
 	isAppLoading: false,
+	documentYBeforeLoading: 0,
 	user: null,
 	isLoggedIn: false,
 }
@@ -29,26 +30,30 @@ const appSlice = createSlice({
 		},
 		startLoading: state => {
 			state.isAppLoading = true
+			state.documentYBeforeLoading = document.documentElement.scrollTop || 0
 		},
 		endLoading: state => {
 			state.isAppLoading = false
+			window.scrollTo(0, state.documentYBeforeLoading)
 		},
 		setToken: (state, action: PayloadAction<string>) => {
 			state.token = action.payload
 		},
-		login: (state, action: PayloadAction<UserClient>) => {
+		setUser: (state, action: PayloadAction<UserClient>) => {
 			state.user = action.payload
+		},
+		login: state => {
 			state.isLoggedIn = true
 		},
 		logout: state => {
 			state.user = null
 			state.isLoggedIn = false
 			state.token = ""
-      localStorage.removeItem("user")
+			localStorage.removeItem("user")
 		},
 	},
 })
 
 export default appSlice.reducer
-export const { setTheme, startLoading, endLoading, setToken, login, logout } =
+export const { setTheme, startLoading, endLoading, setToken, login, logout, setUser } =
 	appSlice.actions

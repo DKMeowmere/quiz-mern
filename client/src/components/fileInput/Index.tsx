@@ -21,8 +21,8 @@ export function FileInput({
 }: Props) {
 	return (
 		<FileInputContainer width={width} maxWidth={maxWidth} bgColor={bgColor}>
-			<label htmlFor={id}>{text}</label>
-			<input id={id} data-cy={dataCy} type="file" onChange={onChange} />
+			<label htmlFor={id} data-cy={dataCy}>{text}</label>
+			<input id={id} type="file" onChange={onChange} />
 		</FileInputContainer>
 	)
 }

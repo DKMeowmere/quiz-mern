@@ -1,12 +1,17 @@
 import { CustomErrorType } from "../../types/customError"
 
+export const minimumNumberOfQustionsExceeded: CustomErrorType = {
+	message: "Quiz musi posiadać minimalnie 1 pytanie",
+	statusCode: 400,
+}
+
 export const maximumNumberOfAnswersExceeded: CustomErrorType = {
 	message: "Pytanie może maksymalnie składać się z 4 odpowiedzi",
 	statusCode: 400,
 }
 
 export const minimumNumberOfAnswersExceeded: CustomErrorType = {
-	message: "Pytanie może minimalnie składać się z 2 odpowiedzi",
+	message: "Pytanie musi minimalnie składać się z 2 odpowiedzi",
 	statusCode: 400,
 }
 

@@ -7,6 +7,7 @@ type Props = {
 	bgColor?: string
 	textColor?: string
 	onlyIcon?: boolean
+	disabled?: boolean
 }
 
 export const Button = styled.button<Props>`
@@ -16,7 +17,7 @@ export const Button = styled.button<Props>`
 	background-color: ${({ bgColor, theme }) => bgColor || theme.colors.main};
 	color: ${({ textColor, theme }) => textColor || theme.colors.whiteText};
 	padding: 5px 10px;
-	cursor: pointer;
+	cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 	text-transform: uppercase;
 	letter-spacing: 1.6px;
 	font-weight: bold;
@@ -27,7 +28,8 @@ export const Button = styled.button<Props>`
 	align-items: center;
 	margin: 0 auto;
 	&:hover {
-		box-shadow: 0px 0px 25px 0px ${({ bgColor }) => bgColor};
+		box-shadow: 0px 0px 25px 0px
+			${({ bgColor, disabled }) => (disabled ? "none" : bgColor)};
 	}
 	svg {
 		width: 25px;

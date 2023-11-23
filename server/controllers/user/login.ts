@@ -6,7 +6,6 @@ import { CustomError } from "../../types/customError.js"
 import { env } from "../../config/envVariables.js"
 import { loginFailed, userNotFound } from "../../config/constants/userErrors.js"
 import { User } from "../../models/user.js"
-import { Quiz } from "../../models/quiz.js"
 import { createToken } from "../../utils/createToken.js"
 import { handleControllerError } from "../../utils/handleControllerError.js"
 
@@ -27,8 +26,6 @@ export async function login(req: CustomRequest, res: Response) {
 				throw new CustomError(userNotFound)
 			}
 
-			const userQuizes = await Quiz.find({ creatorId: user._id })
-			user.userQuizes = userQuizes
 			user.password = ""
 
 			res.json({
@@ -52,9 +49,6 @@ export async function login(req: CustomRequest, res: Response) {
 			throw new CustomError(userNotFound)
 		}
 
-		const userQuizes = await Quiz.find({ creatorId: user._id })
-		user.userQuizes = userQuizes
-
 		const isProvidedPasswordCorrect = await bcrypt.compare(
 			password,
 			user.password
@@ -65,7 +59,6 @@ export async function login(req: CustomRequest, res: Response) {
 		}
 		const token = createToken(user)
 
-		user.userQuizes = userQuizes
 		user.password = ""
 		res.json({ user, token })
 	} catch (err) {

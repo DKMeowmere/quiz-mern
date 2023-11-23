@@ -6,6 +6,7 @@ export type AppState = {
 	theme: Theme
 	themeType: "LIGHT" | "DARK"
 	isAppLoading: boolean
+	documentYBeforeLoading: number
 	isLoggedIn: boolean
 	user: UserClient | null
 }

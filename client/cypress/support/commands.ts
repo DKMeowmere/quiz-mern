@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 /// <reference types="cypress" />
 
+import { addAnswer } from "./utils/addAnswer"
+import { addFullQuestion } from "./utils/addFullQuestion"
+import { addQuestion } from "./utils/addQuestion"
+import { createAccount } from "./utils/createAccount"
+import { createFullQuiz } from "./utils/createFullQuiz"
+import { createQuiz } from "./utils/createQuiz"
+
 Cypress.Commands.add("getBySel", (selector, ...args) => {
 	return cy.get(`[data-cy=${selector}]`, ...args)
 })
@@ -9,53 +16,37 @@ Cypress.Commands.add("getBySelLike", (selector, ...args) => {
 	return cy.get(`[data-cy*=${selector}]`, ...args)
 })
 
-Cypress.Commands.add("serverRequest", url =>
-	cy.request(Cypress.env("SERVER_URL") + url)
+Cypress.Commands.add("serverRequest", (url, options) =>
+	cy.request({
+		url: `${Cypress.env("SERVER_URL")}${url}`,
+		...(options as Record<string, unknown>),
+	})
 )
 
-Cypress.Commands.add("createAccount", user => {
-	cy.visit("/user/create")
-	cy.getBySel("name-input").type(user.name)
-	cy.getBySel("email-input").type(user.email)
-	cy.getBySel("password-input").type(user.password, { force: true })
-	cy.getBySel("biography-input").type(user.biography.slice(0, 10))
-	cy.getBySel("avatar-input").selectFile(
-		"cypress/fixtures/files/hercegBosna.png"
-	)
-	cy.getBySel("submit-btn").click()
-	cy.wait(1000)
-	//wait 1s, timeouts not working for getCookie
-	cy.getCookie("token").should("exist")
-	cy.window()
+Cypress.Commands.add("store", () => cy.window().its("store").invoke("getState"))
+Cypress.Commands.add("dispatch", (...args) =>
+	cy
+		.window()
 		.its("store")
-		.invoke("getState")
-		.its("app")
-		.its("isLoggedIn")
-		.should("exist")
-})
+		.invoke("dispatch", ...args)
+)
 
-Cypress.Commands.add("deleteAccount", () => {
-	cy.getCookie("token").should("exist")
-	cy.window()
-		.its("store")
-		.invoke("getState")
-		.its("app")
-		.its("isLoggedIn")
-		.should("be.true")
+Cypress.Commands.add("createAccount", createAccount)
 
-	cy.window().then(win => {
-		const url = `/user/${win.store.getState().app.user._id}/edit`
+Cypress.Commands.add("createQuiz", createQuiz)
+Cypress.Commands.add("createFullQuiz", createFullQuiz)
+Cypress.Commands.add("getQuizGameState", () => cy.store().its("quizGame"))
+Cypress.Commands.add("getQuiz", () => cy.getQuizGameState().its("quiz"))
 
-		cy.visit(url)
-		cy.getBySel("open-delete-account-modal-btn").click()
-		cy.getBySel("delete-account-btn").click()
+Cypress.Commands.add("addQuestion", addQuestion)
+Cypress.Commands.add("addFullQuestion", addFullQuestion)
+Cypress.Commands.add("getQuestion", questionIndex =>
+	cy.getQuiz().its("questions").its(questionIndex)
+)
 
-		cy.wait(1000)
-		cy.window()
-			.its("store")
-			.invoke("getState")
-			.its("app")
-			.its("isLoggedIn")
-			.should("be.false")
-	})
-})
+Cypress.Commands.add("addAnswer", addAnswer)
+Cypress.Commands.add("getAnswer", (questionIndex, answerIndex) =>
+	cy.getQuestion(questionIndex).its("answers").its(answerIndex)
+)
+
+Cypress.Commands.add("getUser", () => cy.store().its("app").its("user"))

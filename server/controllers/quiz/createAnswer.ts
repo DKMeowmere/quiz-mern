@@ -37,6 +37,7 @@ export async function createAnswer(req: CustomRequest, res: Response) {
 		}
 
 		const answer = result.data
+		answer._id = new mongoose.Types.ObjectId().toString()
 
 		if (!mongoose.isValidObjectId(quizId)) {
 			throw new CustomError(invalidQuizId)

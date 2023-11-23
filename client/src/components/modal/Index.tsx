@@ -6,13 +6,10 @@ type Props = {
 	children: any
 	closeCallback: (...args: any[]) => void
 	className?: string
+	[key: string]: any
 }
 
-export function Modal({
-	children,
-	closeCallback,
-	className,
-}: Props) {
+export function Modal({ children, closeCallback, className, ...rest }: Props) {
 	useEffect(() => {
 		document.body.style.overflow = "hidden"
 		return () => {
@@ -21,8 +18,12 @@ export function Modal({
 	}, [])
 
 	return (
-		<ModalContainer className={className}>
-			<RiCloseCircleFill className="close-btn" onClick={closeCallback} />
+		<ModalContainer className={className} {...rest}>
+			<RiCloseCircleFill
+				className="close-btn"
+				onClick={closeCallback}
+				data-cy="close-modal-btn"
+			/>
 			<div className="content">{children}</div>
 		</ModalContainer>
 	)

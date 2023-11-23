@@ -9,7 +9,8 @@
 		"skipLibCheck": true,
 		"moduleResolution": "node",
 		"types": ["jest", "node", "@types/jest"],
-		"allowJs": true
+		"allowJs": true,
+		"resolveJsonModule": true
 	},
 	"include": ["*.ts", "/static/*", "env.prod"],
 	"exclude": ["dist", "node_modules", "__tests__/**", "jest.config.ts"]

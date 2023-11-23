@@ -5,7 +5,7 @@ import morgan from "morgan"
 import { fileURLToPath } from "url"
 import { dirname } from "path"
 import { env } from "../config/envVariables.js"
-import { router as  quizRouter } from "../routes/quiz.js"
+import { router as quizRouter } from "../routes/quiz.js"
 import { router as userRouter } from "../routes/user.js"
 import { setupCustomRequest } from "../middlewares/setupCustomRequest.js"
 import { resetServerAndDb } from "./resetServer.js"
@@ -28,7 +28,9 @@ export function createServer() {
 	env.NODE_ENV !== "test" && app.use(morgan("dev"))
 	app.use((req, res, next) => setupCustomRequest(req, res, next))
 
-	app.use("/healthcheck", (req, res) => res.status(200))
+	app.use("/healthcheck", (req, res) =>
+		res.json({ message: "App is up and running" })
+	)
 	if (env.NODE_ENV !== "production") {
 		app.use("/reset", (req, res) => resetServerAndDb(req, res))
 	}
@@ -39,9 +41,12 @@ export function createServer() {
 	app.use(express.static(path.join(__dirname, "../client")))
 
 	app.use((req, res) => {
-		res.status(200).sendFile(path.join(__dirname, "../client/index.html"))
+		if (env.NODE_ENV === "production") {
+			res.status(200).sendFile(path.join(__dirname, "../client/index.html"))
+		} else {
+			res.redirect(env.CLIENT_APP_URL)
+		}
 	})
 
 	return app
 }
-

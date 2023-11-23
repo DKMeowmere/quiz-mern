@@ -55,6 +55,17 @@ export function useFiles() {
 		if (!files || !files[0] || !quiz) {
 			return
 		}
+
+		if (question.type === "TEXT") {
+			dispatch(
+				enqueueAlert({
+					body: "Nie można dodać pliku do pytania tekstowego",
+					type: "INFO",
+				})
+			)
+			return
+		}
+
 		const file = files[0]
 		const ext = file.name.split(".").pop() || ""
 		const imagePossibleExts = new Set(["jpg", "png", "jpeg"])
@@ -116,6 +127,7 @@ export function useFiles() {
 		if (!files || !files[0] || !quiz) {
 			return
 		}
+    
 		if (answer.type === "TEXT") {
 			dispatch(
 				enqueueAlert({
@@ -123,6 +135,7 @@ export function useFiles() {
 					type: "INFO",
 				})
 			)
+			return
 		}
 
 		const file = files[0]
