@@ -57,7 +57,7 @@ export function useLogin() {
 			)
 			dispatch(login())
 			dispatch(setUser(user))
-      dispatch(setToken(token))
+			dispatch(setToken(token))
 			setCookie("token", token, { path: "/" })
 
 			navigate("/")

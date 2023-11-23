@@ -13,10 +13,9 @@ export function Quizes({ quizes }: Props) {
 	if (quizes.length === 0) {
 		return null
 	}
-  
+
 	return (
 		<>
-			<h2>Quizy użytkownika:</h2>
 			<QuizesContainer className="quizes-container">
 				{quizes.map(quiz => (
 					<QuizLink

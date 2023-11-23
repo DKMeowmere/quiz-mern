@@ -60,7 +60,12 @@ export function UserProfile({ user }: Props) {
 							&quot;{user.biography}&quot;
 						</p>
 					)}
-					<Quizes quizes={user.userQuizes} />
+					{user.userQuizes.length > 0 && (
+						<>
+							<h2>Quizy użytkownika:</h2>
+							<Quizes quizes={user.userQuizes} />
+						</>
+					)}
 				</>
 			)}
 		</ProfileContainer>
